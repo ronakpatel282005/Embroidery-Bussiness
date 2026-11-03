@@ -1089,6 +1089,21 @@ export default function WorkersPage() {
     setAttendanceDate(current.toISOString().split('T')[0])
   }
 
+  // Month Navigation for Salary & Hisaab (Supports jumping to any previous or next month!)
+  const handleShiftMonth = (delta: number) => {
+    const [yStr, mStr] = salaryMonth.split('-')
+    const current = new Date(parseInt(yStr, 10), parseInt(mStr, 10) - 1 + delta, 1)
+    const newYear = current.getFullYear()
+    const newMonth = String(current.getMonth() + 1).padStart(2, '0')
+    setSalaryMonth(`${newYear}-${newMonth}`)
+  }
+
+  const humanSalaryMonth = useMemo(() => {
+    const [yStr, mStr] = salaryMonth.split('-')
+    const d = new Date(parseInt(yStr, 10), parseInt(mStr, 10) - 1, 1)
+    return d.toLocaleString('en-IN', { month: 'long', year: 'numeric' })
+  }, [salaryMonth])
+
   // Selected worker details for Hisaab Slip
   const currentHisaab = useMemo(() => {
     if (!hisaabSlipWorker) return null
@@ -1331,13 +1346,13 @@ export default function WorkersPage() {
                 <Button variant="ghost" size="sm" onClick={() => handleShiftDate(-1)} className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900">
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
-                <div className="flex items-center gap-2 px-2 border-x border-slate-200">
-                  <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                <div className="flex items-center gap-2 px-2.5 border-x border-slate-200">
+                  <Calendar className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <Input
                     type="date"
                     value={attendanceDate}
                     onChange={(e) => setAttendanceDate(e.target.value)}
-                    className="font-mono font-semibold text-slate-900 h-7 border-0 p-0 text-xs focus-visible:ring-0 w-32 bg-transparent"
+                    className="font-mono font-bold text-slate-900 h-7 border-0 p-0 text-xs focus-visible:ring-0 w-36 bg-transparent cursor-pointer"
                   />
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => handleShiftDate(1)} className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900">
@@ -1752,22 +1767,61 @@ export default function WorkersPage() {
         <div className="space-y-6">
           {/* Month Selector Bar & Summary */}
           <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-2xs flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg border border-slate-200 bg-white shadow-2xs">
-                <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                <Label htmlFor="salary-month-select" className="text-3xs font-bold uppercase tracking-wider text-slate-400">
-                  Month:
-                </Label>
-                <Input
-                  id="salary-month-select"
-                  type="month"
-                  value={salaryMonth}
-                  onChange={(e) => setSalaryMonth(e.target.value)}
-                  className="font-mono font-semibold text-slate-900 h-7 border-0 p-0 text-xs focus-visible:ring-0 w-28 bg-transparent"
-                />
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Stepper with Previous & Next Month */}
+              <div className="flex items-center rounded-lg border border-slate-200 bg-white p-0.5 shadow-2xs">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleShiftMonth(-1)}
+                  className="h-8 px-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 gap-1 text-xs font-semibold"
+                  title="Previous Month"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span className="hidden sm:inline">Prev Month</span>
+                </Button>
+
+                {/* Visible Clickable Month Input with Calendar Icon */}
+                <div className="flex items-center gap-1.5 px-2.5 py-1 border-x border-slate-200 bg-slate-50/50">
+                  <Calendar className="w-4 h-4 text-slate-600 shrink-0" />
+                  <label htmlFor="salary-month-select" className="sr-only">Choose Month</label>
+                  <Input
+                    id="salary-month-select"
+                    type="month"
+                    value={salaryMonth}
+                    onChange={(e) => setSalaryMonth(e.target.value)}
+                    className="font-mono font-bold text-slate-900 h-7 w-40 text-xs bg-transparent cursor-pointer border border-slate-200 px-2 rounded focus-visible:ring-1 focus-visible:ring-slate-900"
+                    title="Click calendar icon to pick any previous or future month"
+                  />
+                </div>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleShiftMonth(1)}
+                  className="h-8 px-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 gap-1 text-xs font-semibold"
+                  title="Next Month"
+                >
+                  <span className="hidden sm:inline">Next Month</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
               </div>
-              <span className="text-xs font-mono font-semibold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg border border-slate-200">
-                {salarySummary[0]?.daysInMonth || 30} Days
+
+              {/* Jump to Current Month */}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setSalaryMonth(new Date().toISOString().slice(0, 7))}
+                className="h-8 text-xs font-semibold text-slate-700 border-slate-200 hover:bg-slate-50"
+              >
+                Current Month
+              </Button>
+
+              <span className="text-xs font-mono font-bold px-2.5 py-1.5 bg-slate-100 text-slate-800 rounded-lg border border-slate-200">
+                {salarySummary[0]?.daysInMonth || 30} Days ({humanSalaryMonth})
               </span>
             </div>
 
@@ -1830,7 +1884,7 @@ export default function WorkersPage() {
             <div className="p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <div>
                 <h3 className="font-bold text-slate-900 text-xs">
-                  Monthly Worker Salary Sheet & Advance Register &mdash; {salaryMonth}
+                  Monthly Worker Salary Sheet & Advance Register &mdash; {humanSalaryMonth} ({salaryMonth})
                 </h3>
                 <p className="text-2xs text-slate-500 mt-0.5">
                   Automated hisaab calculated from machine shifts worked (including 2.0 double machine days & 1.5 machine days), piece work logs, and advance deductions.

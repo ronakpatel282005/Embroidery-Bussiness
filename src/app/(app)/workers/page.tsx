@@ -2800,6 +2800,28 @@ export default function WorkersPage() {
           title={`Give Advance (Upaad / Kharcha) — ${quickUpaadWorker.name}`}
         >
           <form onSubmit={handleSaveQuickUpaad} className="space-y-4">
+            {/* Worker Selector Dropdown */}
+            <div>
+              <Label htmlFor="upaad-worker-select" className="text-xs font-bold text-slate-700">
+                Staff Member (Worker) *
+              </Label>
+              <select
+                id="upaad-worker-select"
+                value={quickUpaadWorker.id}
+                onChange={(e) => {
+                  const selected = workers.find((w) => w.id === e.target.value)
+                  if (selected) setQuickUpaadWorker(selected)
+                }}
+                className="w-full mt-1 h-9 px-3 bg-white border border-slate-300 rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-slate-900"
+              >
+                {workers.map((w) => (
+                  <option key={w.id} value={w.id}>
+                    {w.name} — {w.role} {w.status === 'left' ? '(Inactive)' : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold text-amber-950">{quickUpaadWorker.name}</p>
@@ -2876,11 +2898,11 @@ export default function WorkersPage() {
                   id="upaad-mode"
                   value={upaadMode}
                   onChange={(e) => setUpaadMode(e.target.value as any)}
-                  className="w-full mt-1 h-10 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium"
+                  className="w-full mt-1 h-9 px-3 bg-white border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-slate-900"
                 >
-                  <option value="Cash">💵 Cash</option>
-                  <option value="UPI">📱 UPI (GPay / PhonePe / Paytm)</option>
-                  <option value="Bank Transfer">🏦 Bank Transfer</option>
+                  <option value="Cash">Cash</option>
+                  <option value="UPI">UPI (GPay / PhonePe / Paytm)</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
                 </select>
               </div>
 

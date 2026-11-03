@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Sidebar from '@/components/layout/Sidebar'
+import TopHeader from '@/components/layout/TopHeader'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,11 +19,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50/60 font-sans antialiased">
+    <div className="flex min-h-screen bg-slate-50/60 font-sans antialiased text-slate-900">
       <Sidebar />
-      <main className="flex-1 overflow-auto min-w-0">
-        {children}
-      </main>
+      <div className="flex-1 flex flex-col min-w-0">
+        <TopHeader />
+        <main className="flex-1 overflow-auto min-w-0">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }

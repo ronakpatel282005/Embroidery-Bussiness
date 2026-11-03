@@ -41,12 +41,23 @@ export default async function DashboardPage() {
     { data: paymentsData },
     { data: allotmentsData },
     { data: factoryPaymentsData },
+    { data: recentPaymentsData },
   ] = await Promise.all([
-    supabase.from('veparis').select('id, opening_balance').eq('business_id', business.id),
-    supabase.from('lots').select('id, total_amount, due_date, status').eq('business_id', business.id),
+    supabase.from('veparis').select('id, name, opening_balance').eq('business_id', business.id),
+    supabase
+      .from('lots')
+      .select('id, lot_number, total_amount, total_pieces, due_date, status, date, created_at, veparis(name)')
+      .eq('business_id', business.id)
+      .order('created_at', { ascending: false }),
     supabase.from('vepari_payments').select('amount').eq('business_id', business.id),
     supabase.from('lot_allotments').select('total_amount, factories(is_own)').eq('business_id', business.id),
     supabase.from('factory_payments').select('amount').eq('business_id', business.id),
+    supabase
+      .from('vepari_payments')
+      .select('id, amount, payment_date, payment_mode, veparis(name)')
+      .eq('business_id', business.id)
+      .order('payment_date', { ascending: false })
+      .limit(5),
   ])
 
   // Receivables from Veparis
@@ -62,10 +73,23 @@ export default async function DashboardPage() {
   const totalFactoryPaid = (factoryPaymentsData || []).reduce((sum, p: any) => sum + Number(p.amount || 0), 0)
   const totalToPay = Math.max(0, totalAllotmentCost - totalFactoryPaid)
 
-  const activeLots = (lotsData || []).filter((l) => l.status !== 'completed').length
-  const overdueLots = (lotsData || []).filter(
+  // Production Stage Pipeline Counts
+  const allLots = lotsData || []
+  const receivedLots = allLots.filter((l) => l.status === 'received')
+  const inProgressLots = allLots.filter((l) => l.status === 'in_progress')
+  const completedLots = allLots.filter((l) => l.status === 'completed')
+
+  const totalPiecesInProcess = inProgressLots.reduce((sum, l) => sum + Number(l.total_pieces || 0), 0)
+  const totalPiecesReceived = receivedLots.reduce((sum, l) => sum + Number(l.total_pieces || 0), 0)
+  const totalPiecesCompleted = completedLots.reduce((sum, l) => sum + Number(l.total_pieces || 0), 0)
+
+  const activeLots = inProgressLots.length + receivedLots.length
+  const overdueLots = allLots.filter(
     (l) => l.due_date && new Date(l.due_date) < new Date() && l.status !== 'completed'
   ).length
+
+  const recentLots = allLots.slice(0, 5)
+  const recentPayments = recentPaymentsData || []
 
   const todayDateFormatted = new Date().toLocaleDateString('en-IN', {
     weekday: 'short',
@@ -101,7 +125,7 @@ export default async function DashboardPage() {
             href="/lots/new"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800 text-xs font-semibold shadow-2xs transition-colors"
           >
-            <PackagePlus className="w-3.5 h-3.5 text-emerald-400" />
+            <PackagePlus className="w-3.5 h-3.5 text-slate-300" />
             <span>Create New Lot</span>
           </Link>
           <Link
@@ -168,7 +192,7 @@ export default async function DashboardPage() {
               <span className="text-xs text-slate-400 font-mono">Active</span>
             </div>
             <p className="text-3xs font-mono text-slate-500 mt-1">
-              Current floor & partner assignments
+              {totalPiecesInProcess.toLocaleString('en-IN')} pieces running
             </p>
           </Link>
 
@@ -194,6 +218,176 @@ export default async function DashboardPage() {
               {overdueLots > 0 ? 'Immediate follow-up needed' : 'All delivery commitments on schedule'}
             </p>
           </Link>
+        </div>
+      </div>
+
+      {/* Production Pipeline Visualizer */}
+      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-2xs">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-wider font-mono text-slate-800 flex items-center gap-2">
+              <Layers className="w-3.5 h-3.5 text-slate-500" />
+              Production Stage Telemetry
+            </h2>
+            <p className="text-2xs text-slate-500 mt-0.5">Live distribution of work across manufacturing milestones</p>
+          </div>
+          <Link href="/lots" className="text-2xs font-mono font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1">
+            <span>View all lots</span>
+            <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Stage 1 */}
+          <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50">
+            <div className="flex items-center justify-between">
+              <span className="text-3xs font-mono uppercase font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                01. Inward Intake
+              </span>
+              <span className="text-2xs font-mono font-bold text-slate-700">{receivedLots.length} lots</span>
+            </div>
+            <p className="text-xl font-bold font-mono text-slate-900 tracking-tight mt-2">
+              {totalPiecesReceived.toLocaleString('en-IN')} <span className="text-xs font-normal text-slate-400">pcs</span>
+            </p>
+            <p className="text-3xs text-slate-500 mt-1">Awaiting machine floor allotment</p>
+          </div>
+
+          {/* Stage 2 */}
+          <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50">
+            <div className="flex items-center justify-between">
+              <span className="text-3xs font-mono uppercase font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                02. On Machines (Running)
+              </span>
+              <span className="text-2xs font-mono font-bold text-slate-700">{inProgressLots.length} lots</span>
+            </div>
+            <p className="text-xl font-bold font-mono text-slate-900 tracking-tight mt-2">
+              {totalPiecesInProcess.toLocaleString('en-IN')} <span className="text-xs font-normal text-slate-400">pcs</span>
+            </p>
+            <p className="text-3xs text-slate-500 mt-1">Active stitching in-house & partners</p>
+          </div>
+
+          {/* Stage 3 */}
+          <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50">
+            <div className="flex items-center justify-between">
+              <span className="text-3xs font-mono uppercase font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                03. Finished & Billed
+              </span>
+              <span className="text-2xs font-mono font-bold text-slate-700">{completedLots.length} lots</span>
+            </div>
+            <p className="text-xl font-bold font-mono text-slate-900 tracking-tight mt-2">
+              {totalPiecesCompleted.toLocaleString('en-IN')} <span className="text-xs font-normal text-slate-400">pcs</span>
+            </p>
+            <p className="text-3xs text-slate-500 mt-1">Ready or delivered to trader</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Real-Time Operational Stream Split (Recent Lots + Recent Collections) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Inward Lots */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/40">
+            <div className="flex items-center gap-2">
+              <PackagePlus className="w-3.5 h-3.5 text-slate-500" />
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                Recent Inward Lots
+              </h2>
+            </div>
+            <Link href="/lots" className="text-2xs font-mono font-semibold text-slate-600 hover:text-slate-900">
+              View All →
+            </Link>
+          </div>
+
+          {recentLots.length === 0 ? (
+            <div className="py-12 text-center text-xs text-slate-400 font-mono">
+              No lots recorded yet. Click &quot;Create New Lot&quot; above.
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {recentLots.map((lot: any) => (
+                <Link
+                  key={lot.id}
+                  href={`/lots/${lot.id}`}
+                  className="px-5 py-3.5 flex items-center justify-between hover:bg-slate-50/80 transition-colors block group"
+                >
+                  <div className="min-w-0 pr-3">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-xs text-slate-900 group-hover:text-slate-700">
+                        {lot.lot_number}
+                      </span>
+                      <span
+                        className={`px-1.5 py-0.2 rounded text-3xs font-mono font-semibold ${
+                          lot.status === 'completed'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            : lot.status === 'in_progress'
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                            : 'bg-amber-50 text-amber-700 border border-amber-200'
+                        }`}
+                      >
+                        {lot.status.replace('_', ' ')}
+                      </span>
+                    </div>
+                    <p className="text-2xs text-slate-500 mt-0.5 truncate">
+                      {lot.veparis?.name || 'Unknown Trader'} &bull; {lot.total_pieces?.toLocaleString('en-IN')} pcs
+                    </p>
+                  </div>
+
+                  <div className="text-right shrink-0">
+                    <p className="font-mono font-bold text-xs text-slate-900">
+                      {formatCurrency(lot.total_amount)}
+                    </p>
+                    <p className="text-3xs font-mono text-slate-400 mt-0.5">
+                      {lot.date}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Recent Financial Collections */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/40">
+            <div className="flex items-center gap-2">
+              <Receipt className="w-3.5 h-3.5 text-slate-500" />
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                Recent Collections Realized
+              </h2>
+            </div>
+            <Link href="/veparis" className="text-2xs font-mono font-semibold text-slate-600 hover:text-slate-900">
+              Trader Ledgers →
+            </Link>
+          </div>
+
+          {recentPayments.length === 0 ? (
+            <div className="py-12 text-center text-xs text-slate-400 font-mono">
+              No payments logged yet.
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {recentPayments.map((p: any) => (
+                <div key={p.id} className="px-5 py-3.5 flex items-center justify-between">
+                  <div className="min-w-0 pr-3">
+                    <p className="font-bold text-xs text-slate-900 truncate">
+                      {p.veparis?.name || 'Direct Receipt'}
+                    </p>
+                    <p className="text-3xs font-mono text-slate-400 mt-0.5">
+                      Mode: {p.payment_mode || 'Cash'} &bull; {p.payment_date}
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="font-mono font-bold text-xs text-emerald-700">
+                      +{formatCurrency(p.amount)}
+                    </p>
+                    <span className="text-3xs font-mono text-emerald-600 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200">
+                      Cleared
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

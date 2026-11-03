@@ -902,38 +902,40 @@ export default function LotsDirectoryPage() {
                         </td>
                       </tr>
                     ))
-                  : filteredLots.map((lot) => (
-                      <tr key={lot.id} className="hover:bg-gray-50/75 transition-colors">
+                  : filteredLots.map((lot) => {
+                      const percentAllotted = lot.total_pieces > 0 ? Math.min(100, Math.round((lot.allotted_pieces / lot.total_pieces) * 100)) : 0
+                      return (
+                      <tr key={lot.id} className="hover:bg-slate-50/80 transition-colors">
                         {/* Lot / Challan # */}
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-1.5">
                             <Link
                               href={`/lots/${lot.id}`}
-                              className="font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5"
+                              className="font-mono font-bold text-xs text-slate-900 hover:text-slate-700 flex items-center gap-1 group"
                             >
                               <span>{lot.lot_number}</span>
-                              <ArrowRight className="w-3.5 h-3.5 opacity-60" />
+                              <ArrowRight className="w-3 h-3 opacity-40 group-hover:opacity-100 transition-opacity" />
                             </Link>
                           </div>
                           {lot.design_number && (
-                            <p className="text-xs text-gray-400 mt-0.5">Design: {lot.design_number}</p>
+                            <p className="text-3xs font-mono text-slate-500 mt-0.5">Design: {lot.design_number}</p>
                           )}
                         </td>
 
                         {/* Vepari (Client) */}
-                        <td className="px-6 py-4">
-                          <span className="font-semibold text-gray-900">{lot.vepari_name}</span>
+                        <td className="px-5 py-3.5">
+                          <span className="font-semibold text-xs text-slate-900">{lot.vepari_name}</span>
                         </td>
 
                         {/* Date */}
-                        <td className="px-6 py-4 text-xs text-gray-600">
+                        <td className="px-5 py-3.5 text-xs text-slate-600 font-mono">
                           <p>{formatDate(lot.date)}</p>
                           {lot.due_date && (
                             <p
                               className={
                                 new Date(lot.due_date) < new Date() && lot.status !== 'completed'
-                                  ? 'text-red-500 font-semibold'
-                                  : 'text-gray-400'
+                                  ? 'text-rose-600 font-semibold text-2xs'
+                                  : 'text-slate-400 text-3xs'
                               }
                             >
                               Due: {formatDate(lot.due_date)}
@@ -942,12 +944,12 @@ export default function LotsDirectoryPage() {
                         </td>
 
                         {/* Garment Parts */}
-                        <td className="px-6 py-4">
-                          <div className="flex flex-wrap gap-1.5">
+                        <td className="px-5 py-3.5">
+                          <div className="flex flex-wrap gap-1">
                             {lot.items.map((it, idx) => (
                               <span
                                 key={idx}
-                                className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium"
+                                className="inline-flex items-center px-1.5 py-0.5 rounded text-3xs bg-slate-100 text-slate-700 font-medium border border-slate-200"
                               >
                                 {it.work_type_name}
                               </span>
@@ -955,29 +957,44 @@ export default function LotsDirectoryPage() {
                           </div>
                         </td>
 
-                        {/* Total Pieces Count */}
-                        <td className="px-5 py-3 text-center">
+                        {/* Total Pieces Count with Micro Progress Bar */}
+                        <td className="px-5 py-3.5 text-center">
                           <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 text-slate-800 font-bold text-xs font-mono tabular-nums">
                             {lot.total_pieces.toLocaleString('en-IN')} pcs
                           </span>
+                          {lot.allotted_pieces > 0 && (
+                            <div className="w-20 mx-auto mt-1.5">
+                              <div className="w-full bg-slate-100 rounded-full h-1 overflow-hidden">
+                                <div
+                                  className={`h-1 rounded-full transition-all ${
+                                    percentAllotted >= 100 ? 'bg-emerald-500' : 'bg-slate-900'
+                                  }`}
+                                  style={{ width: `${percentAllotted}%` }}
+                                />
+                              </div>
+                              <span className="block text-3xs font-mono text-slate-500 mt-0.5">
+                                {lot.allotted_pieces}/{lot.total_pieces} ({percentAllotted}%)
+                              </span>
+                            </div>
+                          )}
                         </td>
 
                         {/* Total Amount */}
-                        <td className="px-5 py-3 text-right font-mono font-bold text-xs text-slate-900 tabular-nums">
+                        <td className="px-5 py-3.5 text-right font-mono font-bold text-xs text-slate-900 tabular-nums">
                           {formatCurrency(lot.total_amount)}
                         </td>
 
                         {/* Allotment Status: Not Allotted, Allotted, Completed */}
-                        <td className="px-5 py-3 text-center">
+                        <td className="px-5 py-3.5 text-center">
                           <span
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-2xs font-semibold ${
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-2xs font-semibold font-mono ${
                               lot.allotment_status === 'completed'
                                 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                                 : lot.allotment_status === 'allotted'
-                                ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                                ? 'bg-slate-100 text-slate-800 border border-slate-200'
                                 : lot.allotment_status === 'partially_allotted'
-                                ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                                : 'bg-amber-50 text-amber-800 border border-amber-200'
+                                ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                                : 'bg-slate-50 text-slate-600 border border-slate-200'
                             }`}
                           >
                             {lot.allotment_status === 'completed' ? (
@@ -987,28 +1004,28 @@ export default function LotsDirectoryPage() {
                               </>
                             ) : lot.allotment_status === 'allotted' ? (
                               <>
-                                <Clock className="w-3 h-3 text-indigo-600" />
-                                Allotted ({lot.total_pieces} pcs)
+                                <Clock className="w-3 h-3 text-slate-600" />
+                                Floor Allotted
                               </>
                             ) : lot.allotment_status === 'partially_allotted' ? (
                               <>
-                                <Clock className="w-3 h-3 text-purple-600" />
-                                Partial ({lot.allotted_pieces}/{lot.total_pieces})
+                                <Clock className="w-3 h-3 text-amber-600" />
+                                Partial
                               </>
                             ) : (
                               <>
-                                <Package className="w-3 h-3 text-amber-600" />
-                                Not Allotted
+                                <Package className="w-3 h-3 text-slate-400" />
+                                Unallotted
                               </>
                             )}
                           </span>
                         </td>
 
-                        {/* Actions: Supports split lots (e.g. 200 to Factory 1, 40 to Factory 2) */}
-                        <td className="px-6 py-4 text-center">
+                        {/* Actions */}
+                        <td className="px-5 py-3.5 text-center">
                           <div className="flex items-center justify-center gap-1.5">
                             <Link href={`/lots/${lot.id}`}>
-                              <Button size="sm" variant="outline" className="h-8 text-xs px-2.5">
+                              <Button size="sm" variant="outline" className="h-7 text-xs px-2 border-slate-200 text-slate-700 hover:bg-slate-50">
                                 View
                               </Button>
                             </Link>
@@ -1018,10 +1035,10 @@ export default function LotsDirectoryPage() {
                               <Link href={`/lots/${lot.id}/allot`}>
                                 <Button
                                   size="sm"
-                                  className="h-8 text-xs px-2.5 bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs"
+                                  className="h-7 text-xs px-2.5 bg-slate-900 hover:bg-slate-800 text-white shadow-2xs font-semibold"
                                   title="Allot work to machines or external factories"
                                 >
-                                  <Send className="w-3 h-3 mr-1" />
+                                  <Send className="w-3 h-3 mr-1 text-slate-300" />
                                   Allot
                                 </Button>
                               </Link>
@@ -1090,7 +1107,8 @@ export default function LotsDirectoryPage() {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                      )
+                    })}
               </tbody>
             </table>
           </div>

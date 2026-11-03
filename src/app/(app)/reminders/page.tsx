@@ -17,6 +17,7 @@ import {
   ArrowRight,
   CheckCircle2,
 } from 'lucide-react'
+import { DEMO_LOTS, DEMO_VEPARIS } from '@/lib/demoData'
 
 interface OverdueLot {
   id: string
@@ -59,21 +60,57 @@ export default function RemindersPage() {
   const loadReminders = useCallback(async () => {
     setLoading(true)
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) {
-      setLoading(false)
-      return
+    const isDemo = typeof document !== 'undefined' && document.cookie.includes('demo_mode=true')
+
+    let user = null
+    let business = null
+    try {
+      const userRes = await supabase.auth.getUser()
+      user = userRes.data?.user || null
+      if (user) {
+        const bizRes = await supabase
+          .from('businesses')
+          .select('id, name')
+          .eq('user_id', user.id)
+          .single()
+        business = bizRes.data
+      }
+    } catch {
+      // offline
     }
 
-    const { data: business } = await supabase
-      .from('businesses')
-      .select('id, name')
-      .eq('user_id', user.id)
-      .single()
-
-    if (!business) {
+    if (isDemo || !user || !business) {
+      const demoOverdue: OverdueLot[] = DEMO_LOTS.filter((l) => l.is_overdue).map((l) => ({
+        id: l.id,
+        lot_number: l.lot_number,
+        vepari_name: l.vepari_name,
+        vepari_phone: '9825123450',
+        due_date: l.due_date,
+        total_pieces: l.total_pieces,
+        total_amount: l.total_amount,
+        days_overdue: 3,
+      }))
+      const demoPayments: PaymentDueClient[] = DEMO_VEPARIS.filter((v) => v.balance > 0).map((v) => ({
+        id: v.id,
+        name: v.name,
+        phone: v.phone,
+        outstanding: v.balance,
+      }))
+      const demoFac: PendingFactoryAllotment[] = [
+        {
+          id: 'pfa-1',
+          challan_number: 'CH-2401',
+          factory_name: 'Maruti Embroidery Job Work',
+          factory_phone: '9898012345',
+          allotment_date: '2026-11-01',
+          pieces: 480,
+          total_amount: 31200,
+          days_in_production: 2,
+        },
+      ]
+      setOverdueLots(demoOverdue)
+      setPaymentDues(demoPayments)
+      setFactoryFollowups(demoFac)
       setLoading(false)
       return
     }

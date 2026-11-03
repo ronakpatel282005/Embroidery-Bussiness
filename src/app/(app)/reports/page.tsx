@@ -18,6 +18,7 @@ import {
   ArrowDownRight,
   Filter,
 } from 'lucide-react'
+import { DEMO_LOTS, DEMO_VEPARIS, DEMO_FACTORIES } from '@/lib/demoData'
 
 interface VepariSummary {
   id: string
@@ -60,21 +61,63 @@ export default function ReportsAnalyticsPage() {
   const loadReportData = useCallback(async () => {
     setLoading(true)
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) {
-      setLoading(false)
-      return
+    const isDemo = typeof document !== 'undefined' && document.cookie.includes('demo_mode=true')
+
+    let user = null
+    let business = null
+    try {
+      const userRes = await supabase.auth.getUser()
+      user = userRes.data?.user || null
+      if (user) {
+        const bizRes = await supabase
+          .from('businesses')
+          .select('id, name')
+          .eq('user_id', user.id)
+          .single()
+        business = bizRes.data
+      }
+    } catch {
+      // offline
     }
 
-    const { data: business } = await supabase
-      .from('businesses')
-      .select('id, name')
-      .eq('user_id', user.id)
-      .single()
+    if (isDemo || !user || !business) {
+      const billed = DEMO_LOTS.reduce((s, l) => s + l.total_amount, 0)
+      const collected = DEMO_VEPARIS.reduce((s, v) => s + v.total_received, 0)
+      const facCost = DEMO_FACTORIES.filter((f) => !f.is_own).reduce((s, f) => s + f.total_allotted_amount, 0)
+      const facPaid = DEMO_FACTORIES.filter((f) => !f.is_own).reduce((s, f) => s + f.total_paid, 0)
+      const pieces = DEMO_LOTS.reduce((s, l) => s + l.total_pieces, 0)
 
-    if (!business) {
+      setTotalBilled(billed)
+      setTotalCollected(collected)
+      setTotalFactoryCost(facCost)
+      setTotalFactoryPaid(facPaid)
+      setTotalPieces(pieces)
+      setLotCount(DEMO_LOTS.length)
+
+      setVepariBreakdown(
+        DEMO_VEPARIS.map((v) => ({
+          id: v.id,
+          name: v.name,
+          phone: v.phone,
+          total_billed: v.total_billed,
+          total_paid: v.total_received,
+          outstanding: v.balance,
+        }))
+      )
+
+      setFactoryBreakdown(
+        DEMO_FACTORIES.filter((f) => !f.is_own).map((f) => ({
+          id: f.id,
+          name: f.name,
+          owner_name: 'Master / Manager',
+          phone: f.phone,
+          is_own: f.is_own,
+          total_cost: f.total_allotted_amount,
+          total_paid: f.total_paid,
+          balance_due: f.balance,
+        }))
+      )
+
       setLoading(false)
       return
     }

@@ -21,6 +21,7 @@ import {
 import AddFactoryModal, { FactoryOption } from '@/components/factories/AddFactoryModal'
 import EditFactoryModal from '@/components/factories/EditFactoryModal'
 import PayFactoryModal from '@/components/factories/PayFactoryModal'
+import { DEMO_FACTORIES } from '@/lib/demoData'
 
 export default function FactoriesDirectoryPage() {
   const supabase = createClient()
@@ -40,24 +41,44 @@ export default function FactoriesDirectoryPage() {
   const loadFactories = useCallback(async () => {
     setLoading(true)
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) {
+    const isDemo = typeof document !== 'undefined' && document.cookie.includes('demo_mode=true')
+
+    let user = null
+    let business = null
+    try {
+      const userRes = await supabase.auth.getUser()
+      user = userRes.data?.user || null
+      if (user) {
+        const bizRes = await supabase
+          .from('businesses')
+          .select('id, name')
+          .eq('user_id', user.id)
+          .single()
+        business = bizRes.data
+      }
+    } catch {
+      // offline
+    }
+
+    if (isDemo || !user || !business) {
+      setBusinessId('demo-biz-radhe-01')
+      const demoList: FactoryOption[] = DEMO_FACTORIES.map((f) => ({
+        id: f.id,
+        name: f.name,
+        phone: f.phone,
+        owner_name: f.name.includes('Own') ? 'Ghanshyambhai Patel' : 'Job Work Master',
+        location: f.location,
+        is_own: f.is_own,
+      }))
+      setFactories(demoList)
+      const externalPayable = DEMO_FACTORIES.filter((f) => !f.is_own).reduce((s, f) => s + f.balance, 0)
+      const externalPaid = DEMO_FACTORIES.filter((f) => !f.is_own).reduce((s, f) => s + f.total_paid, 0)
+      setTotalPayable(externalPayable)
+      setTotalPaid(externalPaid)
       setLoading(false)
       return
     }
 
-    const { data: business } = await supabase
-      .from('businesses')
-      .select('id, name')
-      .eq('user_id', user.id)
-      .single()
-
-    if (!business) {
-      setLoading(false)
-      return
-    }
     setBusinessId(business.id)
 
     // Fetch factories, allotments & payments in parallel

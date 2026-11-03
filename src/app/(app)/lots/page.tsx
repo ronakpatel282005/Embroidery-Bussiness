@@ -24,6 +24,7 @@ import {
   Inbox,
 } from 'lucide-react'
 import EditLotModal from '@/components/lots/EditLotModal'
+import { DEMO_LOTS } from '@/lib/demoData'
 
 interface LotItemSummary {
   work_type_name: string
@@ -86,24 +87,63 @@ export default function LotsDirectoryPage() {
 
   const loadLots = useCallback(async () => {
     setLoading(true)
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) {
+
+    const isDemo = typeof document !== 'undefined' && document.cookie.includes('demo_mode=true')
+
+    let user = null
+    let business = null
+    try {
+      const userRes = await supabase.auth.getUser()
+      user = userRes.data?.user || null
+      if (user) {
+        const bizRes = await supabase
+          .from('businesses')
+          .select('id, name')
+          .eq('user_id', user.id)
+          .single()
+        business = bizRes.data
+      }
+    } catch {
+      // Supabase unconfigured or network issue
+    }
+
+    if (isDemo || !user || !business) {
+      setBusinessId('demo-biz-radhe-01')
+      const demoUnified: UnifiedLotRow[] = DEMO_LOTS.map((dl) => ({
+        id: dl.id,
+        lot_number: dl.lot_number,
+        vepari_name: dl.vepari_name,
+        is_partner_job: false,
+        date: dl.date,
+        due_date: dl.due_date,
+        design_number: dl.design_number,
+        description: dl.description,
+        pricing_type: dl.pricing_type,
+        total_pieces: dl.total_pieces,
+        allotted_pieces: dl.allotted_pieces,
+        total_amount: dl.total_amount,
+        status: dl.status,
+        items: dl.items.map((i) => ({
+          work_type_name: i.work_type_name,
+          pieces: i.pieces,
+          allotted_pieces: i.allotted_pieces,
+        })),
+        allotment_status:
+          dl.allotted_pieces === 0
+            ? 'not_allotted'
+            : dl.allotted_pieces < dl.total_pieces
+            ? 'partially_allotted'
+            : dl.status === 'completed'
+            ? 'completed'
+            : 'allotted',
+        is_assigned_to_self: dl.assigned_factory_name?.includes('Own Unit') ?? false,
+        assigned_factory_names: dl.assigned_factory_name ? [dl.assigned_factory_name] : [],
+      }))
+      setLots(demoUnified)
       setLoading(false)
       return
     }
 
-    const { data: business } = await supabase
-      .from('businesses')
-      .select('id, name')
-      .eq('user_id', user.id)
-      .single()
-
-    if (!business) {
-      setLoading(false)
-      return
-    }
     setBusinessId(business.id)
 
     // 1. Fetch all lots belonging to this business (both direct vepari lots and lots received from other factories)

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Sparkles, ArrowRight } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -24,6 +24,7 @@ export default function LoginPage() {
   const router = useRouter()
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const [isDemoLoading, setIsDemoLoading] = useState(false)
   const supabase = createClient()
 
   const {
@@ -47,49 +48,92 @@ export default function LoginPage() {
       return
     }
 
+    // Clear demo cookie if logging in with real credentials
+    document.cookie = 'demo_mode=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+    router.push('/dashboard')
+    router.refresh()
+  }
+
+  const handleExploreDemo = () => {
+    setIsDemoLoading(true)
+    // Set demo cookie for 7 days
+    document.cookie = 'demo_mode=true; path=/; max-age=604800; SameSite=Lax'
     router.push('/dashboard')
     router.refresh()
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
-        {/* Logo / Brand */}
+        {/* Logo / Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-indigo-600 rounded-xl mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-slate-900 border border-slate-800 rounded-xl mb-3 shadow-md">
+            <svg className="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 2L4 7v10l8 5 8-5V7l-8-5z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12M8 9.5l8 5M8 14.5l8-5" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Embroidery Platform</h1>
-          <p className="text-gray-500 text-sm mt-1">Sign in to your business account</p>
+          <h1 className="text-xl font-black text-slate-900 tracking-tight">Khatodara Flow &bull; Textile ERP</h1>
+          <p className="text-slate-500 text-xs mt-0.5">Embroidery Manufacturing, Lots & Karigar Ledger</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Welcome back</CardTitle>
-            <CardDescription>Enter your business credentials to continue</CardDescription>
+        {/* Demo Business Exploration Strip */}
+        <div className="mb-4 bg-emerald-950 border border-emerald-800/80 rounded-xl p-4 text-white shadow-md">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-3xs uppercase font-mono tracking-wider font-bold text-emerald-300">
+                  Instant Interactive Preview
+                </span>
+              </div>
+              <h3 className="font-bold text-sm text-emerald-100 mt-1">
+                Explore Demo Business (રાધે એમ્બ્રોઇડરી)
+              </h3>
+              <p className="text-2xs text-emerald-200/80 mt-0.5 leading-relaxed">
+                Experience full software with 10 lots, 5 Surat veparis, 4 factories & workers hisaab without credentials.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleExploreDemo}
+            disabled={isDemoLoading}
+            className="w-full mt-3 h-10 px-4 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-slate-950" />
+            <span>{isDemoLoading ? 'Loading Demo Business...' : 'Enter Demo Mode (રાધે એમ્બ્રોઇડરી) →'}</span>
+          </button>
+        </div>
+
+        <Card className="border-slate-200 shadow-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-base font-bold text-slate-900">Sign in to your account</CardTitle>
+            <CardDescription className="text-xs text-slate-500">
+              Enter your registered credentials to access your production floor
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-1">
-                <Label htmlFor="email">Business Email</Label>
+                <Label htmlFor="email" className="text-xs font-semibold text-slate-700">Business Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="business@example.com"
+                  placeholder="admin@khatodaraflow.com"
                   autoComplete="email"
+                  className="h-9 text-xs"
                   {...register('email')}
                 />
                 {errors.email && (
-                  <p className="text-xs text-red-600">{errors.email.message}</p>
+                  <p className="text-xs text-rose-600">{errors.email.message}</p>
                 )}
               </div>
 
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <Link href="/auth/forgot-password" className="text-xs text-indigo-600 hover:underline">
+                  <Label htmlFor="password" className="text-xs font-semibold text-slate-700">Password</Label>
+                  <Link href="/auth/forgot-password" className="text-xs text-slate-500 hover:text-slate-900">
                     Forgot password?
                   </Link>
                 </div>
@@ -97,41 +141,41 @@ export default function LoginPage() {
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Your password"
+                    placeholder="••••••••"
                     autoComplete="current-password"
-                    className="pr-10"
+                    className="pr-10 h-9 text-xs"
                     {...register('password')}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
                     tabIndex={-1}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-xs text-red-600">{errors.password.message}</p>
+                  <p className="text-xs text-rose-600">{errors.password.message}</p>
                 )}
               </div>
 
               {serverError && (
-                <div className="rounded-md bg-red-50 border border-red-200 p-3">
-                  <p className="text-sm text-red-700">{serverError}</p>
+                <div className="rounded-md bg-rose-50 border border-rose-200 p-2.5">
+                  <p className="text-xs font-medium text-rose-700">{serverError}</p>
                 </div>
               )}
 
-              <Button type="submit" className="w-full" size="lg" isLoading={isSubmitting}>
-                {isSubmitting ? 'Signing in...' : 'Sign In'}
+              <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs h-9" isLoading={isSubmitting}>
+                {isSubmitting ? 'Signing in...' : 'Sign In to Factory'}
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="justify-center">
-            <p className="text-sm text-gray-500">
+          <CardFooter className="justify-center border-t border-slate-100 pt-3 pb-3">
+            <p className="text-xs text-slate-500">
               New business?{' '}
-              <Link href="/auth/signup" className="text-indigo-600 font-medium hover:underline">
-                Create an account
+              <Link href="/auth/signup" className="text-slate-900 font-semibold hover:underline">
+                Create factory account
               </Link>
             </p>
           </CardFooter>

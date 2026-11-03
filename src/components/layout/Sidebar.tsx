@@ -17,46 +17,49 @@ import {
   Settings,
   LogOut,
   Link2,
-  Sparkles,
 } from 'lucide-react'
-
-const navGroups = [
-  {
-    heading: 'Core Operations',
-    items: [
-      { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-      { href: '/lots', label: 'Lots Directory', icon: Package },
-      { href: '/factories', label: 'Factories & Floor', icon: Factory },
-      { href: '/workers', label: 'Workers & Payroll', icon: UserCheck },
-    ],
-  },
-  {
-    heading: 'Finance & Supply',
-    items: [
-      { href: '/veparis', label: 'Veparis (Traders)', icon: Users },
-      { href: '/material-shops', label: 'Material & Spares', icon: ShoppingBag },
-      { href: '/reports', label: 'Reports & Hisaab', icon: BarChart3 },
-    ],
-  },
-  {
-    heading: 'Connectivity',
-    items: [
-      { href: '/business-linking', label: 'Business Linking', icon: Link2 },
-      { href: '/reminders', label: 'Active Reminders', icon: Bell },
-      { href: '/settings', label: 'Settings', icon: Settings },
-    ],
-  },
-]
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const { t, language } = useLanguage()
 
   const handleSignOut = async () => {
+    // Clear demo cookie if present
+    document.cookie = 'demo_mode=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
     await supabase.auth.signOut()
     router.push('/auth/login')
   }
+
+  const navGroups = [
+    {
+      heading: language === 'gu' ? 'મુખ્ય કામગીરી' : language === 'hi' ? 'मुख्य कार्य' : 'Core Operations',
+      items: [
+        { href: '/dashboard', label: t('dashboard'), icon: LayoutDashboard },
+        { href: '/lots', label: t('lots'), icon: Package },
+        { href: '/factories', label: t('factories'), icon: Factory },
+        { href: '/workers', label: t('workers'), icon: UserCheck },
+      ],
+    },
+    {
+      heading: language === 'gu' ? 'નાણાં અને સ્ટોક' : language === 'hi' ? 'वित्त एवं स्टॉक' : 'Finance & Supply',
+      items: [
+        { href: '/veparis', label: t('veparis'), icon: Users },
+        { href: '/material-shops', label: t('materials'), icon: ShoppingBag },
+        { href: '/reports', label: t('reports'), icon: BarChart3 },
+      ],
+    },
+    {
+      heading: language === 'gu' ? 'કનેક્ટિવિટી' : language === 'hi' ? 'कनेक्टिविटी' : 'Connectivity',
+      items: [
+        { href: '/business-linking', label: t('linking'), icon: Link2 },
+        { href: '/reminders', label: t('reminders'), icon: Bell },
+        { href: '/settings', label: t('settings'), icon: Settings },
+      ],
+    },
+  ]
 
   return (
     <aside className="w-60 min-h-screen bg-slate-900 border-r border-slate-800 flex flex-col text-slate-300 select-none">
@@ -88,42 +91,49 @@ export default function Sidebar() {
       <nav className="flex-1 px-3 py-3 space-y-4 overflow-y-auto">
         {navGroups.map((group) => (
           <div key={group.heading} className="space-y-1">
-            <p className="px-2.5 text-3xs uppercase font-bold tracking-wider text-slate-500 font-mono">
+            <p className="px-3 py-1 text-3xs font-bold uppercase tracking-wider font-mono text-slate-400">
               {group.heading}
             </p>
-            <div className="space-y-0.5">
-              {group.items.map((item) => {
-                const Icon = item.icon
-                const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href + '/'))
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
+            {group.items.map((item) => {
+              const Icon = item.icon
+              const isActive =
+                item.href === '/dashboard'
+                  ? pathname === '/dashboard'
+                  : pathname.startsWith(item.href)
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all group',
+                    isActive
+                      ? 'bg-slate-800 text-white font-semibold border-l-2 border-emerald-400 rounded-l-none'
+                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50'
+                  )}
+                >
+                  <Icon
                     className={cn(
-                      'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
-                      isActive
-                        ? 'bg-slate-800 text-white font-semibold shadow-2xs border border-slate-700/80'
-                        : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
+                      'w-4 h-4 transition-colors',
+                      isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'
                     )}
-                  >
-                    <Icon className={cn('w-4 h-4 flex-shrink-0', isActive ? 'text-emerald-400' : 'text-slate-400')} />
-                    <span className="truncate">{item.label}</span>
-                  </Link>
-                )
-              })}
-            </div>
+                  />
+                  <span className="truncate">{item.label}</span>
+                </Link>
+              )
+            })}
           </div>
         ))}
       </nav>
 
-      {/* Footer & Sign out */}
-      <div className="p-3 border-t border-slate-800/80">
+      {/* System Footer & Logout */}
+      <div className="p-3 border-t border-slate-800">
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-2.5 px-2.5 py-1.5 w-full rounded-md text-xs font-medium text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/20 border border-transparent transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors"
         >
-          <LogOut className="w-4 h-4 flex-shrink-0" />
-          <span>Sign Out</span>
+          <LogOut className="w-4 h-4" />
+          <span>{language === 'gu' ? 'લોગ આઉટ (Sign Out)' : language === 'hi' ? 'लॉग आउट' : 'Sign Out'}</span>
         </button>
       </div>
     </aside>

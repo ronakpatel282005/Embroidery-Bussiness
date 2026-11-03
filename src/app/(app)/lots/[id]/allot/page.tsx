@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import FormattedNumberInput from '@/components/ui/formatted-number-input'
 import AddFactoryModal, { FactoryOption } from '@/components/factories/AddFactoryModal'
 import { autoLinkFactories } from '@/lib/autoLinker'
+import { DEMO_LOTS, DEMO_FACTORIES, DEMO_BUSINESS } from '@/lib/demoData'
 import {
   ArrowLeft,
   Send,
@@ -80,25 +81,71 @@ export default function LotAllotmentPage({ params }: { params: Promise<{ id: str
   const loadData = useCallback(async () => {
     setLoading(true)
 
-    // 1. Current business
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) {
-      router.push('/auth/login')
+    const isDemo = typeof document !== 'undefined' && document.cookie.includes('demo_mode=true')
+
+    let user = null
+    let business = null
+    try {
+      const userRes = await supabase.auth.getUser()
+      user = userRes.data?.user || null
+      if (user) {
+        const bizRes = await supabase
+          .from('businesses')
+          .select('id, name')
+          .eq('user_id', user.id)
+          .single()
+        business = bizRes.data
+      }
+    } catch {
+      // offline
+    }
+
+    if (isDemo || !user || !business) {
+      setBusinessName(DEMO_BUSINESS.name)
+      const foundLot = DEMO_LOTS.find((l) => l.id === lotId) || DEMO_LOTS[0]
+      const items: LotItem[] = foundLot.items.map((it) => ({
+        id: it.id,
+        work_type_name: it.work_type_name,
+        pieces: it.pieces,
+        allotted_pieces: it.allotted_pieces,
+        available_pieces: Math.max(0, it.pieces - it.allotted_pieces),
+      }))
+      const availablePieces = Math.max(0, foundLot.total_pieces - foundLot.allotted_pieces)
+
+      setLot({
+        id: foundLot.id,
+        business_id: DEMO_BUSINESS.id,
+        lot_number: foundLot.lot_number,
+        date: foundLot.date,
+        due_date: foundLot.due_date,
+        design_number: foundLot.design_number,
+        description: foundLot.description,
+        pricing_type: foundLot.pricing_type,
+        total_pieces: foundLot.total_pieces,
+        total_amount: foundLot.total_amount,
+        vepari_name: foundLot.vepari_name,
+        items,
+        allotted_pieces: foundLot.allotted_pieces,
+        available_pieces: availablePieces > 0 ? availablePieces : foundLot.total_pieces,
+      })
+
+      setPiecesToAllot(availablePieces > 0 ? availablePieces : foundLot.total_pieces)
+      setChallanNumber(`CH-${foundLot.lot_number.replace('L-', '')}-01`)
+      setFactories(
+        DEMO_FACTORIES.map((f) => ({
+          id: f.id,
+          name: f.name,
+          is_own: f.is_own,
+          phone: f.phone,
+          location: f.location,
+        }))
+      )
+      setSelectedFactoryId(DEMO_FACTORIES[1].id)
+      setRatePerPiece(65)
+      setLoading(false)
       return
     }
 
-    const { data: business } = await supabase
-      .from('businesses')
-      .select('id, name')
-      .eq('user_id', user.id)
-      .single()
-
-    if (!business) {
-      router.push('/dashboard')
-      return
-    }
     setBusinessName(business.name)
 
     // 2. Lot details with vepari
@@ -297,6 +344,15 @@ export default function LotAllotmentPage({ params }: { params: Promise<{ id: str
     }
 
     setSubmitting(true)
+
+    const isDemo = typeof document !== 'undefined' && document.cookie.includes('demo_mode=true')
+    if (isDemo) {
+      setTimeout(() => {
+        setSubmitting(false)
+        router.push(`/lots/${lot.id}`)
+      }, 400)
+      return
+    }
 
     // 1. Insert into lot_allotments
     const { data: allotmentData, error: allotmentErr } = await supabase
@@ -684,42 +740,56 @@ export default function LotAllotmentPage({ params }: { params: Promise<{ id: str
                 </div>
               </div>
 
-              {/* Profit Indicator */}
+              {/* Private Commission Preview Card (Strictly Owner Only) */}
               <div
-                className={`p-4 rounded-xl border flex items-center justify-between ${
+                className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                   totalExpectedProfit >= 0
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
-                    : 'bg-red-50 border-red-200 text-red-900'
+                    ? 'bg-slate-900 border-slate-800 text-white'
+                    : 'bg-rose-950 border-rose-800 text-rose-100'
                 }`}
               >
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider">
-                    {totalExpectedProfit >= 0 ? 'Expected Net Margin' : 'Negative Margin Alert'}
+                  <div className="flex items-center gap-2">
+                    <span className="text-3xs uppercase tracking-wider font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      Confidential &bull; Owner Only
+                    </span>
+                    <span className="text-3xs font-mono text-slate-400">
+                      {marginPerPiece >= 0 ? `${((marginPerPiece / (vepariEffectiveRatePerPiece || 1)) * 100).toFixed(1)}% Gross Margin` : 'Negative Spread'}
+                    </span>
+                  </div>
+                  <p className="text-xs font-semibold text-slate-200 mt-1">
+                    Live Commission Spread & Net Margin
                   </p>
-                  <p className="text-2xs opacity-80 mt-0.5">
-                    (Vepari Rate ₹{vepariEffectiveRatePerPiece.toLocaleString('en-IN')} - Factory Rate ₹
-                    {effectiveFactoryRatePerPiece.toLocaleString('en-IN')}) × {qtyToAllot} pcs
+                  <p className="text-2xs text-slate-400 mt-0.5 font-mono">
+                    (Vepari Rate ₹{vepariEffectiveRatePerPiece.toLocaleString('en-IN')} - Factory Rate ₹{effectiveFactoryRatePerPiece.toLocaleString('en-IN')}) &times; {qtyToAllot} pcs
                   </p>
                 </div>
-                <div className="text-right">
-                  <p className="text-xl font-bold font-mono">
+                <div className="text-left sm:text-right">
+                  <span className="text-3xs uppercase font-mono text-slate-400 block">Total Spread Profit</span>
+                  <p className="text-xl font-black font-mono tabular-nums text-emerald-400">
                     ₹{totalExpectedProfit.toLocaleString('en-IN')}
                   </p>
-                  <p className="text-2xs font-medium">
-                    (₹{marginPerPiece.toLocaleString('en-IN')} / piece)
+                  <p className="text-2xs font-mono text-slate-400">
+                    ₹{marginPerPiece.toLocaleString('en-IN')} / pc net margin
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
         ) : (
-          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-center gap-3">
-            <span className="text-2xl">🏠</span>
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3 text-white shadow-sm">
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+              <FactoryIcon className="w-5 h-5" />
+            </div>
             <div>
-              <p className="text-sm font-bold text-indigo-950">In-House Production Unit</p>
-              <p className="text-xs text-indigo-800">
-                This lot is being produced on your own machines. No third-party contractor bill is created. Full receivable of ₹
-                {(qtyToAllot * vepariEffectiveRatePerPiece).toLocaleString('en-IN')} is your company's revenue.
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-white">In-House Production Unit</span>
+                <span className="text-3xs uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  Own Machines
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-0.5">
+                This lot is being produced on your own machines. No external job-work contractor expense is incurred. Full receivable of <span className="font-mono font-bold text-emerald-400">₹{(qtyToAllot * vepariEffectiveRatePerPiece).toLocaleString('en-IN')}</span> is direct revenue.
               </p>
             </div>
           </div>

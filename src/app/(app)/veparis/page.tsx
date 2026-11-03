@@ -10,6 +10,8 @@ import AddVepariModal from '@/components/veparis/AddVepariModal'
 import EditVepariModal, { VepariEditData } from '@/components/veparis/EditVepariModal'
 import ReceivePaymentModal from '@/components/veparis/ReceivePaymentModal'
 import { autoLinkVeparis } from '@/lib/autoLinker'
+import { DEMO_VEPARIS } from '@/lib/demoData'
+import { useLanguage } from '@/context/LanguageContext'
 import {
   Users,
   Plus,
@@ -47,6 +49,8 @@ export default function VeparisPage() {
 
   const supabase = createClient()
 
+  const { language } = useLanguage()
+
   const handleEditVepari = (v: VepariRecord) => {
     setEditingVepari({
       id: v.id,
@@ -72,16 +76,43 @@ export default function VeparisPage() {
 
   const loadVeparis = useCallback(async () => {
     setLoading(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
 
-    const { data: business } = await supabase
-      .from('businesses')
-      .select('id')
-      .eq('user_id', user.id)
-      .single()
+    const isDemo = typeof document !== 'undefined' && document.cookie.includes('demo_mode=true')
 
-    if (!business) return
+    let user = null
+    let business = null
+    try {
+      const userRes = await supabase.auth.getUser()
+      user = userRes.data?.user || null
+      if (user) {
+        const bizRes = await supabase
+          .from('businesses')
+          .select('id')
+          .eq('user_id', user.id)
+          .single()
+        business = bizRes.data
+      }
+    } catch {
+      // offline
+    }
+
+    if (isDemo || !user || !business) {
+      setBusinessId('demo-biz-radhe-01')
+      const formatted: VepariRecord[] = DEMO_VEPARIS.map((v) => ({
+        id: v.id,
+        name: v.name,
+        phone: v.phone,
+        address: v.market_name,
+        opening_balance: v.opening_balance,
+        total_paid: v.total_received,
+        outstanding_balance: v.balance,
+        linked_business_id: null,
+      }))
+      setVeparis(formatted)
+      setLoading(false)
+      return
+    }
+
     setBusinessId(business.id)
 
     // 1. Fetch veparis
@@ -170,12 +201,16 @@ export default function VeparisPage() {
   const generateWhatsAppReminder = (vepari: VepariRecord) => {
     if (!vepari.phone) return ''
     const cleanPhone = vepari.phone.replace(/[^0-9]/g, '')
-    const msg = encodeURIComponent(
-      `Hello ${vepari.name},\nThis is a payment reminder for your embroidery lot balance.\nTotal Outstanding Due: ${formatCurrency(
-        vepari.outstanding_balance
-      )}.\nPlease arrange the payment at your earliest convenience. Thank you!`
-    )
-    return `https://wa.me/${cleanPhone.startsWith('91') ? cleanPhone : '91' + cleanPhone}?text=${msg}`
+    const fullPhone = cleanPhone.startsWith('91') ? cleanPhone : '91' + cleanPhone
+
+    const text =
+      language === 'gu'
+        ? `નમસ્તે ${vepari.name},\nરાધે એમ્બ્રોઇડરી (સુરત) તરફથી નમ્ર વિનંતી:\nતમારા ખાતાની કુલ બાકી રકમ ${formatCurrency(vepari.outstanding_balance)} છે.\nકૃપા કરીને રકમ જમા કરાવવા અથવા હિસાબ મિલાવવા સંપર્ક કરશો. આભાર!`
+        : language === 'hi'
+        ? `नमस्ते ${vepari.name},\nराधे एम्ब्रॉयडरी की ओर से सादर प्रणाम:\nआपके खाते का कुल बकाया ${formatCurrency(vepari.outstanding_balance)} है।\nकृपया भुगतान के लिए संपर्क करें। धन्यवाद!`
+        : `Hello ${vepari.name},\nThis is a payment reminder for your embroidery account.\nTotal Outstanding Due: ${formatCurrency(vepari.outstanding_balance)}.\nPlease arrange the clearance at your earliest convenience. Thank you!`
+
+    return `https://wa.me/${fullPhone}?text=${encodeURIComponent(text)}`
   }
 
   return (

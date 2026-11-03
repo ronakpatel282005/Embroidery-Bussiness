@@ -300,34 +300,34 @@ export default function VepariDetailPage({ params }: { params: Promise<{ id: str
       <div className="mb-4">
         <Link
           href="/veparis"
-          className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 mr-1.5" />
-          Back to Veparis
+          <ArrowLeft className="w-3.5 h-3.5 mr-1" />
+          Back to Veparis Directory
         </Link>
       </div>
 
       {/* Header Profile */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-xs mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-2xs mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900">{vepari.name}</h1>
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-indigo-50 text-indigo-700">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900">{vepari.name}</h1>
+              <span className="text-2xs px-2 py-0.5 rounded font-mono font-semibold bg-slate-100 text-slate-700 border border-slate-200">
                 Trader Ledger
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mt-2">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-2 font-mono">
               {vepari.phone && (
-                <div className="flex items-center gap-1.5">
-                  <Phone className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-1.5 text-slate-600">
+                  <Phone className="w-3.5 h-3.5 text-slate-400" />
                   <span>{vepari.phone}</span>
                 </div>
               )}
               {vepari.address && (
-                <div className="flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-1.5 text-slate-600">
+                  <MapPin className="w-3.5 h-3.5 text-slate-400" />
                   <span>{vepari.address}</span>
                 </div>
               )}
@@ -335,24 +335,24 @@ export default function VepariDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setIsEditModalOpen(true)}
-              className="text-gray-700"
+              className="h-8 text-xs font-medium border-slate-200 text-slate-700 hover:bg-slate-50"
             >
-              <Edit2 className="w-3.5 h-3.5 mr-1.5 text-gray-500" />
-              Edit Details
+              <Edit2 className="w-3 h-3 mr-1 text-slate-400" />
+              Edit
             </Button>
 
             <Button
               variant="outline"
               size="sm"
               onClick={handleDeleteVepari}
-              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-gray-200"
+              className="h-8 text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-slate-200"
             >
-              <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+              <Trash2 className="w-3 h-3 mr-1" />
               Delete
             </Button>
 
@@ -361,10 +361,10 @@ export default function VepariDetailPage({ params }: { params: Promise<{ id: str
                 href={generateWhatsAppMessage()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center h-9 px-3 text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-200"
+                className="inline-flex items-center justify-center h-8 px-2.5 text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded border border-emerald-200 shadow-2xs transition-colors gap-1"
               >
-                <MessageCircle className="w-4 h-4 mr-1.5 text-emerald-600" />
-                WhatsApp
+                <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+                WhatsApp Statement
               </a>
             )}
 
@@ -372,107 +372,107 @@ export default function VepariDetailPage({ params }: { params: Promise<{ id: str
               variant="outline"
               size="sm"
               onClick={() => setIsPaymentModalOpen(true)}
-              className="border-green-300 text-green-700 hover:bg-green-50 h-9"
+              className="h-8 text-xs font-semibold border-slate-200 text-slate-800 hover:bg-slate-50"
             >
-              <Receipt className="w-4 h-4 mr-1.5" />
+              <Receipt className="w-3.5 h-3.5 mr-1 text-slate-500" />
               Receive Payment
             </Button>
 
             <Link href={`/lots/new?vepariId=${vepari.id}`}>
-              <Button size="sm" className="h-9">
-                <PackagePlus className="w-4 h-4 mr-1.5" />
-                Add Lot
+              <Button size="sm" className="h-8 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-2xs">
+                <PackagePlus className="w-3.5 h-3.5 mr-1 text-slate-300" />
+                Inward Lot
               </Button>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* KPI Balances */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-            Total Billed (Lots + Opening)
+      {/* Unified Executive Financial Ribbon */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 bg-white rounded-xl border border-slate-200 shadow-2xs mb-6 overflow-hidden">
+        <div className="p-4 sm:p-5">
+          <p className="text-2xs font-bold uppercase tracking-wider text-slate-600">
+            Total Billed Value
           </p>
-          <p className="text-2xl font-bold text-gray-800 mt-1">
+          <p className="text-2xl font-bold font-mono tracking-tight text-slate-900 mt-1">
             {formatCurrency(totalBilled)}
           </p>
-          <p className="text-xs text-gray-400 mt-0.5">
+          <p className="text-2xs text-slate-600 mt-1 font-mono">
             {lots.length} lots ({formatCurrency(lots.reduce((sum, l) => sum + l.total_amount, 0))}) + {formatCurrency(vepari.opening_balance)} opening
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-            Total Payments Received
+        <div className="p-4 sm:p-5">
+          <p className="text-2xs font-bold uppercase tracking-wider text-slate-600">
+            Realized Collections
           </p>
-          <p className="text-2xl font-bold text-green-600 mt-1">
+          <p className="text-2xl font-bold font-mono tracking-tight text-emerald-700 mt-1">
             {formatCurrency(totalPaid)}
           </p>
-          <p className="text-xs text-gray-400 mt-0.5">{payments.length} payments recorded</p>
+          <p className="text-2xs text-slate-600 mt-1 font-mono">{payments.length} payments recorded</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+        <div className="p-4 sm:p-5">
+          <p className="text-2xs font-bold uppercase tracking-wider text-slate-600">
             Current Outstanding Due
           </p>
           <p
-            className={`text-2xl font-bold mt-1 ${
+            className={`text-2xl font-bold font-mono tracking-tight mt-1 ${
               currentBalance > 0
                 ? 'text-amber-600'
                 : currentBalance < 0
                 ? 'text-blue-600'
-                : 'text-green-600'
+                : 'text-emerald-700'
             }`}
           >
             {formatCurrency(currentBalance)}
           </p>
-          <p className="text-xs text-gray-400 mt-0.5">
+          <p className="text-2xs text-slate-600 mt-1 font-mono">
             {currentBalance > 0
-              ? 'Pending to collect from vepari'
+              ? 'Receivable from trader'
               : currentBalance < 0
-              ? 'Advance payment with us'
+              ? 'Advance deposit with unit'
               : 'Account fully settled'}
           </p>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6">
+      {/* Underlined Navigation Tabs */}
+      <div className="flex border-b border-slate-200 mb-6 gap-6">
         <button
           onClick={() => setActiveTab('ledger')}
-          className={`py-3 px-4 font-semibold text-sm border-b-2 transition-colors flex items-center gap-2 ${
+          className={`pb-3 font-semibold text-xs transition-colors flex items-center gap-1.5 border-b-2 -mb-px ${
             activeTab === 'ledger'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-slate-900 text-slate-900'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          <FileSpreadsheet className="w-4 h-4" />
-          Full Ledger Statement ({ledger.length})
+          <FileSpreadsheet className="w-3.5 h-3.5" />
+          Financial Ledger ({ledger.length})
         </button>
 
         <button
           onClick={() => setActiveTab('lots')}
-          className={`py-3 px-4 font-semibold text-sm border-b-2 transition-colors flex items-center gap-2 ${
+          className={`pb-3 font-semibold text-xs transition-colors flex items-center gap-1.5 border-b-2 -mb-px ${
             activeTab === 'lots'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-slate-900 text-slate-900'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          <PackagePlus className="w-4 h-4" />
-          Lots by this Vepari ({lots.length})
+          <PackagePlus className="w-3.5 h-3.5" />
+          Lots Directory ({lots.length})
         </button>
 
         <button
           onClick={() => setActiveTab('payments')}
-          className={`py-3 px-4 font-semibold text-sm border-b-2 transition-colors flex items-center gap-2 ${
+          className={`pb-3 font-semibold text-xs transition-colors flex items-center gap-1.5 border-b-2 -mb-px ${
             activeTab === 'payments'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-slate-900 text-slate-900'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
-          <Receipt className="w-4 h-4" />
-          Payments History ({payments.length})
+          <Receipt className="w-3.5 h-3.5" />
+          Payment Receipts ({payments.length})
         </button>
       </div>
 

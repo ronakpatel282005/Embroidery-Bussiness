@@ -449,23 +449,26 @@ export default function LotsDirectoryPage() {
         ).length
 
   return (
-    <div className="p-8 max-w-7xl">
-      {/* Top Primary Tabs matching User Design */}
-      <div className="flex items-center gap-3 mb-6">
+    <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
+      {/* Primary Navigation Underline Tabs */}
+      <div className="border-b border-slate-200 flex flex-wrap items-center gap-6">
         <button
           type="button"
           onClick={() => {
             setActiveTab('my_lots')
             setStatusFilter('all')
           }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'my_lots'
-              ? 'bg-white text-indigo-700 border-2 border-indigo-400 font-bold shadow-xs'
-              : 'text-gray-500 hover:text-gray-900 font-medium hover:bg-gray-100'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <Package className="w-4 h-4 text-indigo-600" />
-          <span>My Lots ({lots.length})</span>
+          <Package className="w-4 h-4" />
+          <span>My Lots</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {lots.length}
+          </span>
         </button>
 
         <button
@@ -474,44 +477,37 @@ export default function LotsDirectoryPage() {
             setActiveTab('jobs_assigned')
             setStatusFilter('all')
           }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'jobs_assigned'
-              ? 'bg-white text-indigo-700 border-2 border-indigo-400 font-bold shadow-xs'
-              : 'text-gray-500 hover:text-gray-900 font-medium hover:bg-gray-100'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <Inbox className="w-4 h-4 text-indigo-600" />
-          <span>Jobs Assigned to Us ({assignedJobs.length})</span>
+          <Inbox className="w-4 h-4" />
+          <span>Floor Assignments (In-House)</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {assignedJobs.length}
+          </span>
         </button>
       </div>
 
       {/* Header based on active tab */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            {activeTab === 'my_lots' ? (
-              <>
-                <Package className="w-6 h-6 text-indigo-600" />
-                Lots Directory
-              </>
-            ) : (
-              <>
-                <Inbox className="w-6 h-6 text-indigo-600" />
-                Jobs Assigned to Us (Own Floor)
-              </>
-            )}
+          <h1 className="text-xl lg:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            {activeTab === 'my_lots' ? 'Lots & Production Orders' : 'Jobs Assigned to Factory Floor'}
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <p className="text-xs text-slate-500 mt-1">
             {activeTab === 'my_lots'
-              ? 'Complete list of all embroidery lots and client orders.'
-              : 'Production floor assignments: Lots and pieces allotted to your own in-house machines to manufacture.'}
+              ? 'Complete registry of all embroidery lots, customer pieces, and outside factory allotments.'
+              : 'In-house manufacturing queue: pieces assigned to your internal factory machines.'}
           </p>
         </div>
         {activeTab === 'my_lots' && (
           <div>
             <Link href="/lots/new">
-              <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 shadow-xs">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button size="default" className="shadow-2xs">
+                <Plus className="w-4 h-4 mr-1.5" />
                 Add New Lot
               </Button>
             </Link>
@@ -519,115 +515,118 @@ export default function LotsDirectoryPage() {
         )}
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">
-              {activeTab === 'my_lots' ? 'Total Lots' : 'Assigned Jobs'}
+      {/* Unified Executive Metrics Strip */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+          <div className="p-4 sm:p-5">
+            <span className="text-3xs uppercase tracking-wider font-bold text-slate-400 font-mono">
+              {activeTab === 'my_lots' ? 'Total Registered Lots' : 'Active Assigned Jobs'}
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-black text-slate-900 font-mono tabular-nums">
+                {activeTab === 'my_lots' ? filteredLots.length : filteredJobs.length}
+              </span>
+              <span className="text-xs text-slate-400 font-mono">Records</span>
+            </div>
+            <p className="text-3xs font-mono text-slate-500 mt-1">
+              {activeTab === 'my_lots'
+                ? `${notAllottedCount} pending • ${allottedCount} allotted`
+                : `${jobsInProdCount} in production • ${jobsCompletedCount} done`}
             </p>
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-              {activeTab === 'my_lots' ? <Package className="w-5 h-5" /> : <Inbox className="w-5 h-5" />}
-            </div>
           </div>
-          <p className="text-2xl font-bold text-gray-900 mt-2">
-            {activeTab === 'my_lots' ? filteredLots.length : filteredJobs.length}
-          </p>
-          <p className="text-xs text-gray-400 mt-1">
-            {activeTab === 'my_lots'
-              ? `${notAllottedCount} not allotted • ${allottedCount} allotted`
-              : `${jobsInProdCount} in production • ${jobsCompletedCount} completed`}
-          </p>
-        </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">Total Pieces</p>
-            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-              <Layers className="w-5 h-5" />
+          <div className="p-4 sm:p-5">
+            <span className="text-3xs uppercase tracking-wider font-bold text-slate-400 font-mono">
+              Total Pieces
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-black text-slate-900 font-mono tabular-nums">
+                {formatIndianNumber(totalPiecesCount)}
+              </span>
+              <span className="text-xs text-slate-400 font-mono">Pcs</span>
             </div>
-          </div>
-          <p className="text-2xl font-bold text-blue-600 mt-2">{formatIndianNumber(totalPiecesCount)}</p>
-          <p className="text-xs text-gray-400 mt-1">
-            {activeTab === 'my_lots' ? 'Pieces across current lots' : 'Pieces assigned to factory floor'}
-          </p>
-        </div>
-
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">
-              {activeTab === 'my_lots' ? 'Total Receivable' : 'Factory Earnings'}
+            <p className="text-3xs font-mono text-slate-500 mt-1">
+              {activeTab === 'my_lots' ? 'Pieces across selected lots' : 'Pieces running on floor'}
             </p>
-            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
-              <span className="font-bold text-sm">₹</span>
-            </div>
           </div>
-          <p className="text-2xl font-bold text-emerald-600 mt-2 font-mono">
-            {formatCurrency(totalLotsValue)}
-          </p>
-          <p className="text-xs text-gray-400 mt-1">
-            {activeTab === 'my_lots' ? 'Amount receivable from veparis' : 'Receivable from client designers / in-house'}
-          </p>
-        </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">Overdue Delivery</p>
-            <div className="p-2 bg-red-50 text-red-600 rounded-lg">
-              <AlertCircle className="w-5 h-5" />
+          <div className="p-4 sm:p-5">
+            <span className="text-3xs uppercase tracking-wider font-bold text-slate-400 font-mono">
+              {activeTab === 'my_lots' ? 'Total Order Value' : 'Floor Value'}
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-black text-slate-900 font-mono tabular-nums">
+                {formatCurrency(totalLotsValue)}
+              </span>
             </div>
+            <p className="text-3xs font-mono text-slate-500 mt-1">
+              {activeTab === 'my_lots' ? 'Total billing across lots' : 'In-house manufacturing value'}
+            </p>
           </div>
-          <p
-            className={`text-2xl font-bold mt-2 ${
-              overdueCount > 0 ? 'text-red-600' : 'text-gray-900'
-            }`}
-          >
-            {overdueCount}
-          </p>
-          <p className="text-xs text-gray-400 mt-1">Past due delivery date</p>
+
+          <div className="p-4 sm:p-5">
+            <span className="text-3xs uppercase tracking-wider font-bold text-slate-400 font-mono">
+              Delivery Alerts
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span
+                className={`text-xl sm:text-2xl font-black font-mono tabular-nums ${
+                  overdueCount > 0 ? 'text-rose-600' : 'text-emerald-700'
+                }`}
+              >
+                {overdueCount}
+              </span>
+              <span className="text-xs text-slate-400 font-mono">
+                {overdueCount > 0 ? 'Overdue' : 'On Schedule'}
+              </span>
+            </div>
+            <p className="text-3xs font-mono text-slate-500 mt-1">
+              {overdueCount > 0 ? 'Exceeded promised delivery date' : 'All jobs within schedule'}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-xs mb-6 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
         {/* Filter Bar */}
-        <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <div className="p-3.5 border-b border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-slate-50/50">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <Input
               placeholder={
                 activeTab === 'my_lots'
-                  ? 'Search by lot number, vepari name, or design...'
-                  : 'Search by challan number, client name, or design...'
+                  ? 'Search by lot #, vepari, or design...'
+                  : 'Search by challan #, client, or design...'
               }
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 text-sm"
+              className="pl-8 text-xs h-8 bg-white border-slate-200"
             />
           </div>
 
           {/* Status Filters */}
-          <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg text-xs font-medium">
+          <div className="flex items-center gap-1 bg-slate-100/90 border border-slate-200 p-0.5 rounded-lg text-xs font-medium">
             {activeTab === 'my_lots' ? (
               <>
                 <button
                   type="button"
                   onClick={() => setStatusFilter('all')}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
+                  className={`px-2.5 py-1 rounded transition-colors ${
                     statusFilter === 'all'
-                      ? 'bg-white text-indigo-700 shadow-xs font-semibold'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  All Status ({lots.length})
+                  All ({lots.length})
                 </button>
                 <button
                   type="button"
                   onClick={() => setStatusFilter('not_allotted')}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
+                  className={`px-2.5 py-1 rounded transition-colors ${
                     statusFilter === 'not_allotted'
-                      ? 'bg-white text-amber-700 shadow-xs font-semibold'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Not Allotted ({notAllottedCount})
@@ -635,10 +634,10 @@ export default function LotsDirectoryPage() {
                 <button
                   type="button"
                   onClick={() => setStatusFilter('allotted')}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
+                  className={`px-2.5 py-1 rounded transition-colors ${
                     statusFilter === 'allotted'
-                      ? 'bg-white text-blue-700 shadow-xs font-semibold'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Allotted ({allottedCount})
@@ -646,10 +645,10 @@ export default function LotsDirectoryPage() {
                 <button
                   type="button"
                   onClick={() => setStatusFilter('completed')}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
+                  className={`px-2.5 py-1 rounded transition-colors ${
                     statusFilter === 'completed'
-                      ? 'bg-white text-emerald-700 shadow-xs font-semibold'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Completed ({completedCount})
@@ -660,21 +659,21 @@ export default function LotsDirectoryPage() {
                 <button
                   type="button"
                   onClick={() => setStatusFilter('all')}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
+                  className={`px-2.5 py-1 rounded transition-colors ${
                     statusFilter === 'all'
-                      ? 'bg-white text-indigo-700 shadow-xs font-semibold'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  All Jobs ({assignedJobs.length})
+                  All ({assignedJobs.length})
                 </button>
                 <button
                   type="button"
                   onClick={() => setStatusFilter('not_allotted')}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
+                  className={`px-2.5 py-1 rounded transition-colors ${
                     statusFilter === 'not_allotted'
-                      ? 'bg-white text-blue-700 shadow-xs font-semibold'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   In Production ({jobsInProdCount})
@@ -682,10 +681,10 @@ export default function LotsDirectoryPage() {
                 <button
                   type="button"
                   onClick={() => setStatusFilter('completed')}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
+                  className={`px-2.5 py-1 rounded transition-colors ${
                     statusFilter === 'completed'
-                      ? 'bg-white text-emerald-700 shadow-xs font-semibold'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-white text-slate-900 font-bold shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Completed ({jobsCompletedCount})
@@ -735,25 +734,25 @@ export default function LotsDirectoryPage() {
           )
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-600">
-              <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+            <table className="w-full text-left text-sm text-slate-600">
+              <thead className="bg-slate-50/80 text-2xs uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
                 <tr>
-                  <th className="px-6 py-3.5">
+                  <th className="px-5 py-3">
                     {activeTab === 'my_lots' ? 'Lot #' : 'Challan / Lot #'}
                   </th>
-                  <th className="px-6 py-3.5">
+                  <th className="px-5 py-3">
                     {activeTab === 'my_lots' ? 'Vepari (Client)' : 'Assigned From'}
                   </th>
-                  <th className="px-6 py-3.5">Date</th>
-                  <th className="px-6 py-3.5">Garment Parts</th>
-                  <th className="px-6 py-3.5 text-center">Pieces</th>
-                  <th className="px-6 py-3.5 text-right">
+                  <th className="px-5 py-3">Date</th>
+                  <th className="px-5 py-3">Garment Parts</th>
+                  <th className="px-5 py-3 text-center">Pieces</th>
+                  <th className="px-5 py-3 text-right">
                     {activeTab === 'my_lots' ? 'Amount (₹)' : 'Value / Earnings'}
                   </th>
-                  <th className="px-6 py-3.5 text-center">
+                  <th className="px-5 py-3 text-center">
                     {activeTab === 'my_lots' ? 'Allotment Status' : 'Live Status'}
                   </th>
-                  <th className="px-6 py-3.5 text-center">Action</th>
+                  <th className="px-5 py-3 text-center">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -820,29 +819,29 @@ export default function LotsDirectoryPage() {
                         </td>
 
                         {/* Pieces */}
-                        <td className="px-6 py-4 text-center">
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 font-bold text-xs font-mono shadow-2xs">
+                        <td className="px-5 py-3 text-center">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 text-slate-800 font-bold text-xs font-mono tabular-nums">
                             {job.pieces.toLocaleString('en-IN')} pcs
                           </span>
                         </td>
 
                         {/* Amount / Rate */}
-                        <td className="px-6 py-4 text-right font-mono font-bold text-gray-900">
+                        <td className="px-5 py-3 text-right font-mono font-bold text-xs text-slate-900 tabular-nums">
                           {job.amount > 0 ? formatCurrency(job.amount) : 'In-House (₹0)'}
                         </td>
 
                         {/* Live Status */}
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-5 py-3 text-center">
                           <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-2xs font-semibold ${
                               job.status === 'completed'
-                                ? 'bg-emerald-100 text-emerald-800'
-                                : 'bg-blue-100 text-blue-800'
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                : 'bg-slate-100 text-slate-700 border border-slate-200'
                             }`}
                           >
                             {job.status === 'completed' ? (
                               <>
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                 Completed
                               </>
                             ) : (
@@ -957,48 +956,48 @@ export default function LotsDirectoryPage() {
                         </td>
 
                         {/* Total Pieces Count */}
-                        <td className="px-6 py-4 text-center">
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 font-bold text-xs font-mono shadow-2xs">
+                        <td className="px-5 py-3 text-center">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 text-slate-800 font-bold text-xs font-mono tabular-nums">
                             {lot.total_pieces.toLocaleString('en-IN')} pcs
                           </span>
                         </td>
 
                         {/* Total Amount */}
-                        <td className="px-6 py-4 text-right font-mono font-bold text-gray-900">
+                        <td className="px-5 py-3 text-right font-mono font-bold text-xs text-slate-900 tabular-nums">
                           {formatCurrency(lot.total_amount)}
                         </td>
 
                         {/* Allotment Status: Not Allotted, Allotted, Completed */}
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-5 py-3 text-center">
                           <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-2xs font-semibold ${
                               lot.allotment_status === 'completed'
-                                ? 'bg-emerald-100 text-emerald-800'
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                                 : lot.allotment_status === 'allotted'
-                                ? 'bg-blue-100 text-blue-800'
+                                ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
                                 : lot.allotment_status === 'partially_allotted'
-                                ? 'bg-purple-100 text-purple-800'
-                                : 'bg-amber-100 text-amber-800'
+                                ? 'bg-purple-50 text-purple-700 border border-purple-200'
+                                : 'bg-amber-50 text-amber-800 border border-amber-200'
                             }`}
                           >
                             {lot.allotment_status === 'completed' ? (
                               <>
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                 Completed
                               </>
                             ) : lot.allotment_status === 'allotted' ? (
                               <>
-                                <Clock className="w-3.5 h-3.5 text-blue-600" />
+                                <Clock className="w-3 h-3 text-indigo-600" />
                                 Allotted ({lot.total_pieces} pcs)
                               </>
                             ) : lot.allotment_status === 'partially_allotted' ? (
                               <>
-                                <Clock className="w-3.5 h-3.5 text-purple-600" />
-                                Partially Allotted ({lot.allotted_pieces}/{lot.total_pieces} pcs)
+                                <Clock className="w-3 h-3 text-purple-600" />
+                                Partial ({lot.allotted_pieces}/{lot.total_pieces})
                               </>
                             ) : (
                               <>
-                                <Package className="w-3.5 h-3.5 text-amber-600" />
+                                <Package className="w-3 h-3 text-amber-600" />
                                 Not Allotted
                               </>
                             )}

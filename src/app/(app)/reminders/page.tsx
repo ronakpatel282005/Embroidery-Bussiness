@@ -193,111 +193,129 @@ export default function RemindersPage() {
   }, [loadReminders])
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Bell className="w-6 h-6 text-indigo-600" />
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-3xs uppercase tracking-wider font-mono font-bold text-slate-400">
+              Operations Control
+            </span>
+            <span className="text-slate-300">&bull;</span>
+            <span className="text-3xs uppercase tracking-wider font-mono font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+              Production Alerts
+            </span>
+          </div>
+          <h1 className="text-xl lg:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <Bell className="w-6 h-6 text-slate-700" />
             Reminders & Follow-ups
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <p className="text-xs text-slate-500 mt-0.5">
             Automated alerts for delivery dates, high client payment balances, and factory turnaround.
           </p>
         </div>
 
-        <Button onClick={loadReminders} variant="outline" size="sm" className="shadow-xs">
+        <Button onClick={loadReminders} variant="outline" size="sm" className="shadow-2xs h-8 text-xs font-medium">
           Refresh Alerts
         </Button>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 mb-6 bg-gray-100 p-1 rounded-xl w-fit">
+      <div className="border-b border-slate-200 flex flex-wrap items-center gap-6">
         <button
           type="button"
           onClick={() => setActiveTab('deliveries')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'deliveries'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <Clock className="w-4 h-4 text-orange-600" />
-          Delivery Deadlines ({overdueLots.length})
+          <Clock className="w-4 h-4 text-slate-700" />
+          <span>Delivery Deadlines</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {overdueLots.length}
+          </span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('payments')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'payments'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <AlertTriangle className="w-4 h-4 text-amber-600" />
-          Payment Follow-ups ({paymentDues.length})
+          <AlertTriangle className="w-4 h-4 text-slate-700" />
+          <span>Payment Follow-ups</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {paymentDues.length}
+          </span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('factories')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'factories'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <Factory className="w-4 h-4 text-indigo-600" />
-          Factory Turnaround ({factoryFollowups.length})
+          <Factory className="w-4 h-4 text-slate-700" />
+          <span>Factory Turnaround</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {factoryFollowups.length}
+          </span>
         </button>
       </div>
 
       {loading ? (
-        <div className="py-20 text-center text-gray-400 text-sm">
-          <div className="animate-spin h-7 w-7 border-2 border-indigo-600 border-t-transparent rounded-full mx-auto mb-3" />
+        <div className="py-20 text-center text-slate-400 text-sm">
+          <div className="animate-spin h-7 w-7 border-2 border-slate-700 border-t-transparent rounded-full mx-auto mb-3" />
           Checking deadlines & reminders...
         </div>
       ) : activeTab === 'deliveries' ? (
         /* Tab 1: Delivery Deadlines */
-        <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
-          <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+          <div className="p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
             <div>
-              <h3 className="font-bold text-gray-900 text-sm">Promised Delivery Dates</h3>
-              <p className="text-xs text-gray-500">Orders nearing promised date or currently past due</p>
+              <h3 className="font-bold text-slate-900 text-xs">Promised Delivery Dates</h3>
+              <p className="text-2xs text-slate-500 mt-0.5">Orders nearing promised date or currently past due</p>
             </div>
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200">
+            <span className="text-2xs font-mono font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
               {overdueLots.filter((l) => l.days_overdue > 0).length} Overdue
             </span>
           </div>
 
           {overdueLots.length === 0 ? (
-            <div className="py-16 text-center text-gray-400 text-sm">
-              <CheckCircle2 className="w-10 h-10 mx-auto text-emerald-500 mb-2" />
+            <div className="py-16 text-center text-slate-400 text-sm">
+              <CheckCircle2 className="w-8 h-8 mx-auto text-emerald-500 mb-2" />
               All active orders are on schedule! No delivery delays.
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-gray-600">
-                <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50/80 text-2xs uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
                   <tr>
-                    <th className="px-6 py-3.5">Lot #</th>
-                    <th className="px-6 py-3.5">Client (Vepari)</th>
-                    <th className="px-6 py-3.5">Delivery Promised</th>
-                    <th className="px-6 py-3.5 text-center">Pieces</th>
-                    <th className="px-6 py-3.5 text-center">Urgency</th>
-                    <th className="px-6 py-3.5 text-center">Action</th>
+                    <th className="px-5 py-3">Lot #</th>
+                    <th className="px-5 py-3">Client (Vepari)</th>
+                    <th className="px-5 py-3">Delivery Promised</th>
+                    <th className="px-5 py-3 text-center">Pieces</th>
+                    <th className="px-5 py-3 text-center">Urgency</th>
+                    <th className="px-5 py-3 text-center">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-slate-100">
                   {overdueLots.map((l) => (
-                    <tr key={l.id} className="hover:bg-gray-50/75 transition-colors">
-                      <td className="px-6 py-4 font-bold text-indigo-600 font-mono">
+                    <tr key={l.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="px-5 py-3 font-bold text-slate-900 font-mono text-xs">
                         <Link href={`/lots/${l.id}`} className="hover:underline">
                           #{l.lot_number}
                         </Link>
                       </td>
-                      <td className="px-6 py-4 font-semibold text-gray-900">{l.vepari_name}</td>
+                      <td className="px-5 py-3 font-semibold text-slate-900 text-xs">{l.vepari_name}</td>
                       <td className="px-6 py-4 text-xs font-medium text-gray-700">
                         {formatDate(l.due_date)}
                       </td>

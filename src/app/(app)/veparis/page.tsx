@@ -179,16 +179,28 @@ export default function VeparisPage() {
   }
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Veparis (Traders)</h1>
-          <p className="text-gray-500 mt-1">
-            Manage your clients, track outstanding balances, and record payments received.
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-3xs uppercase tracking-wider font-mono font-bold text-slate-400">
+              Commercial Accounts
+            </span>
+            <span className="text-slate-300">&bull;</span>
+            <span className="text-3xs uppercase tracking-wider font-mono font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+              Trade Ledger
+            </span>
+          </div>
+          <h1 className="text-xl lg:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <Users className="w-6 h-6 text-slate-700" />
+            Veparis & Trade Clients
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Manage your client accounts, outstanding lot balances, and recorded receipts.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             onClick={() => {
@@ -196,170 +208,177 @@ export default function VeparisPage() {
               setIsPaymentModalOpen(true)
             }}
             disabled={veparis.length === 0}
+            className="shadow-2xs h-9 text-xs"
           >
-            <Receipt className="w-4 h-4 mr-2 text-indigo-600" />
+            <Receipt className="w-3.5 h-3.5 mr-1.5 text-slate-500" />
             Receive Payment
           </Button>
-          <Button onClick={() => setIsAddModalOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Vepari
+          <Button onClick={() => setIsAddModalOpen(true)} className="shadow-2xs h-9 text-xs">
+            <Plus className="w-3.5 h-3.5 mr-1.5" />
+            Add New Vepari
           </Button>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">Total Veparis</p>
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-              <Users className="w-5 h-5" />
+      {/* Unified Financial Ribbon */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+          <div className="p-4 sm:p-5">
+            <span className="text-3xs uppercase tracking-wider font-bold text-slate-400 font-mono">
+              Total Clients
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-black text-slate-900 font-mono tabular-nums">
+                {veparis.length}
+              </span>
+              <span className="text-xs text-slate-400 font-mono">Traders</span>
             </div>
+            <p className="text-3xs font-mono text-slate-500 mt-1">Active client accounts</p>
           </div>
-          <p className="text-2xl font-bold text-gray-900 mt-2">{veparis.length}</p>
-          <p className="text-xs text-gray-400 mt-1">Registered clients</p>
-        </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">Total to Collect</p>
-            <div className="p-2 bg-amber-50 text-amber-600 rounded-lg">
-              <ArrowUpRight className="w-5 h-5" />
+          <div className="p-4 sm:p-5">
+            <span className="text-3xs uppercase tracking-wider font-bold text-slate-400 font-mono">
+              Outstanding Due to Receive
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-black text-amber-700 font-mono tabular-nums">
+                {formatCurrency(totalReceivable)}
+              </span>
             </div>
+            <p className="text-3xs font-mono text-slate-500 mt-1">Pending client collections</p>
           </div>
-          <p className="text-2xl font-bold text-amber-600 mt-2">{formatCurrency(totalReceivable)}</p>
-          <p className="text-xs text-gray-400 mt-1">Outstanding receivable balance</p>
-        </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">Total Collected</p>
-            <div className="p-2 bg-green-50 text-green-600 rounded-lg">
-              <Receipt className="w-5 h-5" />
+          <div className="p-4 sm:p-5">
+            <span className="text-3xs uppercase tracking-wider font-bold text-slate-400 font-mono">
+              Total Payments Collected
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-black text-emerald-700 font-mono tabular-nums">
+                {formatCurrency(totalCollected)}
+              </span>
             </div>
+            <p className="text-3xs font-mono text-slate-500 mt-1">Total receipts to date</p>
           </div>
-          <p className="text-2xl font-bold text-green-600 mt-2">{formatCurrency(totalCollected)}</p>
-          <p className="text-xs text-gray-400 mt-1">Total payments received to date</p>
         </div>
       </div>
 
-      {/* Search & Actions Bar */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-xs mb-6 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between gap-4">
-          <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+      {/* Directory Table Card */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="p-3.5 border-b border-slate-100 flex items-center justify-between gap-3 bg-slate-50/50">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <Input
-              placeholder="Search by vepari name, phone, or market address..."
+              placeholder="Search by vepari name, phone, or market..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 text-sm"
+              className="pl-8 text-xs h-8 bg-white border-slate-200"
             />
           </div>
-          <p className="text-xs text-gray-500 whitespace-nowrap">
-            Showing {filtered.length} of {veparis.length} veparis
+          <p className="text-2xs font-mono text-slate-500 whitespace-nowrap">
+            {filtered.length} of {veparis.length} clients
           </p>
         </div>
 
         {/* Veparis Table */}
         {loading ? (
-          <div className="py-16 text-center text-gray-400 text-sm">
-            <div className="animate-spin h-7 w-7 border-2 border-indigo-600 border-t-transparent rounded-full mx-auto mb-3" />
-            Loading veparis & ledgers...
+          <div className="py-16 text-center text-slate-400 text-sm">
+            <div className="animate-spin h-7 w-7 border-2 border-slate-700 border-t-transparent rounded-full mx-auto mb-3" />
+            Loading accounts & ledgers...
           </div>
         ) : filtered.length === 0 ? (
-          <div className="py-16 text-center text-gray-500">
-            <div className="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Users className="w-6 h-6" />
+          <div className="py-16 text-center text-slate-500">
+            <div className="w-10 h-10 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Users className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-semibold text-gray-800">No Veparis Found</h3>
-            <p className="text-sm text-gray-400 max-w-sm mx-auto mt-1 mb-4">
+            <h3 className="text-sm font-semibold text-slate-800">No Veparis Found</h3>
+            <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1 mb-4">
               {search
                 ? 'No veparis match your search query.'
                 : 'You have not added any veparis yet. Add your first trader to start managing lots and payments.'}
             </p>
             {!search && (
-              <Button onClick={() => setIsAddModalOpen(true)}>
-                <Plus className="w-4 h-4 mr-1.5" />
+              <Button onClick={() => setIsAddModalOpen(true)} size="sm">
+                <Plus className="w-3.5 h-3.5 mr-1" />
                 Add Your First Vepari
               </Button>
             )}
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-600">
-              <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+            <table className="w-full text-left text-sm text-slate-600">
+              <thead className="bg-slate-50/80 text-2xs uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
                 <tr>
-                  <th className="px-6 py-3.5">Vepari Name</th>
-                  <th className="px-6 py-3.5">Contact</th>
-                  <th className="px-6 py-3.5 text-right">Opening Bal.</th>
-                  <th className="px-6 py-3.5 text-right">Total Paid</th>
-                  <th className="px-6 py-3.5 text-right">Outstanding Due</th>
-                  <th className="px-6 py-3.5 text-center">Actions</th>
+                  <th className="px-5 py-3">Vepari Name</th>
+                  <th className="px-5 py-3">Contact</th>
+                  <th className="px-5 py-3 text-right">Opening Bal.</th>
+                  <th className="px-5 py-3 text-right">Total Paid</th>
+                  <th className="px-5 py-3 text-right">Outstanding Due</th>
+                  <th className="px-5 py-3 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-slate-100">
                 {filtered.map((v) => (
-                  <tr key={v.id} className="hover:bg-gray-50/75 transition-colors">
+                  <tr key={v.id} className="hover:bg-slate-50/80 transition-colors">
                     {/* Name */}
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3">
                       <Link
                         href={`/veparis/${v.id}`}
-                        className="font-semibold text-indigo-600 hover:text-indigo-800 hover:underline block"
+                        className="font-bold text-slate-900 hover:text-slate-600 hover:underline block text-xs"
                       >
                         {v.name}
                       </Link>
                       {v.linked_business_id && (
-                        <span className="inline-block mt-1 px-2 py-0.5 text-2xs font-semibold bg-blue-50 text-blue-700 rounded-md">
+                        <span className="inline-block mt-0.5 px-1.5 py-0.5 text-3xs font-semibold bg-slate-100 text-slate-700 rounded border border-slate-200">
                           Linked Business
                         </span>
                       )}
                       {v.address && (
-                        <div className="flex items-center gap-1 text-xs text-gray-400 mt-1 line-clamp-1">
-                          <MapPin className="w-3 h-3 flex-shrink-0" />
+                        <div className="flex items-center gap-1 text-3xs text-slate-400 mt-0.5 line-clamp-1">
+                          <MapPin className="w-2.5 h-2.5 flex-shrink-0" />
                           <span>{v.address}</span>
                         </div>
                       )}
                     </td>
 
                     {/* Contact */}
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3">
                       {v.phone ? (
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs text-gray-700">{v.phone}</span>
+                          <span className="font-mono text-xs text-slate-700">{v.phone}</span>
                           <a
                             href={generateWhatsAppReminder(v)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors"
+                            className="p-1 text-emerald-600 hover:bg-emerald-50 rounded transition-colors"
                             title="Send WhatsApp Reminder"
                           >
-                            <MessageCircle className="w-4 h-4" />
+                            <MessageCircle className="w-3.5 h-3.5" />
                           </a>
                         </div>
                       ) : (
-                        <span className="text-gray-300 text-xs">—</span>
+                        <span className="text-slate-300 text-xs">—</span>
                       )}
                     </td>
 
                     {/* Opening Balance */}
-                    <td className="px-6 py-4 text-right font-medium text-gray-600">
+                    <td className="px-5 py-3 text-right font-mono font-medium text-xs text-slate-600 tabular-nums">
                       {formatCurrency(v.opening_balance)}
                     </td>
 
                     {/* Total Paid */}
-                    <td className="px-6 py-4 text-right font-medium text-green-600">
+                    <td className="px-5 py-3 text-right font-mono font-semibold text-xs text-emerald-700 tabular-nums">
                       {formatCurrency(v.total_paid)}
                     </td>
 
                     {/* Outstanding Balance */}
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-5 py-3 text-right">
                       <span
-                        className={`inline-block font-semibold px-2.5 py-1 rounded-md text-xs ${
+                        className={`inline-block font-mono font-bold px-2 py-0.5 rounded text-xs tabular-nums ${
                           v.outstanding_balance > 0
-                            ? 'bg-amber-50 text-amber-700 font-bold'
+                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
                             : v.outstanding_balance < 0
-                            ? 'bg-blue-50 text-blue-700'
-                            : 'bg-green-50 text-green-700'
+                            ? 'bg-slate-100 text-slate-700 border border-slate-200'
+                            : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                         }`}
                       >
                         {formatCurrency(v.outstanding_balance)}
@@ -367,33 +386,33 @@ export default function VeparisPage() {
                     </td>
 
                     {/* Actions */}
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-5 py-3 text-center">
                       <div className="flex items-center justify-center gap-1.5">
                         <Link href={`/veparis/${v.id}`}>
-                          <Button size="sm" variant="outline" className="h-8 text-xs px-2.5">
+                          <Button size="sm" variant="outline" className="h-7 text-xs px-2 text-slate-700 border-slate-200 hover:bg-slate-50">
                             Ledger
                           </Button>
                         </Link>
                         <Button
                           size="sm"
-                          variant="default"
-                          className="h-8 text-xs px-2.5 bg-green-600 hover:bg-green-700"
                           onClick={() => handleOpenPayment(v)}
+                          className="h-7 text-xs px-2 bg-slate-900 hover:bg-slate-800 text-white"
                         >
-                          + Receive
+                          <Receipt className="w-3 h-3 mr-1 text-emerald-400" />
+                          Payment
                         </Button>
                         <button
                           type="button"
                           onClick={() => handleEditVepari(v)}
-                          className="p-1.5 text-gray-400 hover:text-indigo-600 rounded-md hover:bg-gray-100 transition-colors"
-                          title="Edit Vepari Information"
+                          className="p-1 text-slate-400 hover:text-slate-700 rounded hover:bg-slate-100 transition-colors"
+                          title="Edit Vepari"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           type="button"
                           onClick={() => handleDeleteVepari(v)}
-                          className="p-1.5 text-gray-400 hover:text-red-600 rounded-md hover:bg-gray-100 transition-colors"
+                          className="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition-colors"
                           title="Delete Vepari"
                         >
                           <Trash2 className="w-3.5 h-3.5" />

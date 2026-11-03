@@ -150,16 +150,22 @@ export default function SettingsPage() {
   ]
 
   return (
-    <div className="p-8 max-w-4xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Settings & Masters</h1>
-        <p className="text-gray-500 mt-1">
-          Configure your business details and master dropdown settings for lots, expenses, and payments.
+    <div className="p-8 max-w-4xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="pb-6 border-b border-slate-200">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-2xs font-semibold uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Preferences & Masters</span>
+          <span className="text-slate-300">/</span>
+          <span className="text-xs text-slate-500 font-medium">Business Configuration</span>
+        </div>
+        <h1 className="text-xl font-bold tracking-tight text-slate-900">Settings & Master Data</h1>
+        <p className="text-xs text-slate-500 mt-1">
+          Configure business metadata, communication defaults, and master dropdown dictionaries.
         </p>
       </div>
 
       {/* Tabs Bar */}
-      <div className="flex border-b border-gray-200 mb-6 space-x-1 sm:space-x-4 overflow-x-auto">
+      <div className="flex border-b border-slate-200 gap-6 overflow-x-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon
           const isActive = activeTab === tab.id
@@ -168,13 +174,13 @@ export default function SettingsPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                'flex items-center gap-2 py-3 px-3.5 border-b-2 font-medium text-sm whitespace-nowrap transition-colors',
+                'flex items-center gap-2 pb-3 text-xs font-semibold whitespace-nowrap transition-colors border-b-2 -mb-px',
                 isActive
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-slate-900 text-slate-900'
+                  : 'border-transparent text-slate-600 hover:text-slate-900'
               )}
             >
-              <Icon className={cn('w-4 h-4', isActive ? 'text-indigo-600' : 'text-gray-400')} />
+              <Icon className={cn('w-3.5 h-3.5', isActive ? 'text-slate-900' : 'text-slate-400')} />
               {tab.label}
             </button>
           )

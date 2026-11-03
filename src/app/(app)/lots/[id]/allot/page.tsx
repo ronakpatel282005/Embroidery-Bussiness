@@ -506,8 +506,8 @@ export default function LotAllotmentPage({ params }: { params: Promise<{ id: str
               </div>
 
               {typeof piecesToAllot === 'number' && piecesToAllot > 0 && piecesToAllot < lot.available_pieces && (
-                <p className="text-2xs text-amber-800 font-semibold mt-2.5 bg-amber-50 p-2 rounded border border-amber-200">
-                  ℹ️ Split Allotment: You are assigning <b>{piecesToAllot} pcs</b> to this factory. The remaining <b>{lot.available_pieces - piecesToAllot} pcs</b> will remain available to allot to a second factory!
+                <p className="text-2xs text-amber-800 font-medium mt-2.5 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
+                  Split Allotment Active: Assigning <b className="font-bold">{piecesToAllot} pcs</b> to this unit. The remaining <b className="font-bold">{lot.available_pieces - piecesToAllot} pcs</b> stay available in lot inventory.
                 </p>
               )}
             </div>
@@ -538,25 +538,21 @@ export default function LotAllotmentPage({ params }: { params: Promise<{ id: str
                   </option>
                   {factories.map((f) => (
                     <option key={f.id} value={f.id}>
-                      {f.is_own
-                        ? `🏠 ${f.name} (In-House Unit)`
-                        : f.linked_business_id
-                        ? `🟢 ${f.name} (Linked Business)`
-                        : `⚪ ${f.name} (Offline)`}
+                      {f.name} {f.is_own ? '— In-House Floor' : f.linked_business_id ? '— Linked Partner' : '— External Floor'}
                     </option>
                   ))}
                 </select>
                 {selectedFactory && (
-                  <p className="text-2xs text-gray-500">
+                  <p className="text-2xs text-slate-500 font-mono mt-1">
                     {selectedFactory.is_own ? (
-                      <span className="text-indigo-600 font-medium">🏠 In-House machine unit (no payment required)</span>
+                      <span className="text-slate-700 font-medium">In-House machine unit (direct production floor)</span>
                     ) : selectedFactory.linked_business_id ? (
-                      <span className="text-emerald-600 font-medium">
-                        🟢 Linked on platform (auto-syncs to their account)
+                      <span className="text-emerald-700 font-medium">
+                        Linked Network Unit (electronic challan dispatch)
                       </span>
                     ) : (
-                      <span className="text-gray-500">
-                        ⚪ Offline factory (communicates via WhatsApp)
+                      <span className="text-slate-500">
+                        External Job Work Unit (WhatsApp slip dispatch)
                       </span>
                     )}
                   </p>

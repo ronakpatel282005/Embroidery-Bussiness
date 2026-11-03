@@ -1095,38 +1095,45 @@ export default function WorkersPage() {
     return salarySummary.find((s) => s.worker.id === hisaabSlipWorker.id) || null
   }, [hisaabSlipWorker, salarySummary])
 
-  // Helper for role color badge
+  // Helper for role color badge (Clean industrial styling)
   const getRoleBadgeClass = (r: string) => {
     const low = r.toLowerCase()
     if (low.includes('master') || low.includes('supervisor')) {
-      return 'bg-purple-50 text-purple-700 border-purple-200'
+      return 'bg-slate-900 text-white border-transparent'
     }
     if (low.includes('operator')) {
-      return 'bg-indigo-50 text-indigo-700 border-indigo-200'
+      return 'bg-slate-100 text-slate-800 border-slate-200'
     }
     if (low.includes('cutter') || low.includes('dora')) {
-      return 'bg-amber-50 text-amber-800 border-amber-200'
+      return 'bg-amber-50 text-amber-900 border-amber-200'
     }
     if (low.includes('sequins') || low.includes('cording')) {
-      return 'bg-emerald-50 text-emerald-800 border-emerald-200'
+      return 'bg-teal-50 text-teal-900 border-teal-200'
     }
     if (low.includes('designer') || low.includes('punching')) {
-      return 'bg-rose-50 text-rose-700 border-rose-200'
+      return 'bg-violet-50 text-violet-900 border-violet-200'
     }
-    return 'bg-gray-100 text-gray-700 border-gray-200'
+    return 'bg-slate-50 text-slate-700 border-slate-200'
   }
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-6 sm:p-8 max-w-7xl mx-auto space-y-6">
       {/* ================= PAGE HEADER & CONTROLS ================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Users className="w-6 h-6 text-indigo-600" />
-            Factory Floor Staff & Machine Attendance
+          <div className="flex items-center gap-2 text-2xs uppercase tracking-wider font-semibold text-slate-400 mb-1">
+            <span className="flex items-center gap-1.5 text-slate-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Floor Operations
+            </span>
+            <span>&bull;</span>
+            <span className="text-slate-500">{businessName}</span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            Workers & Floor Attendance
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
-            Real-time daily machine attendance, 2-machine double present support, customizable roles, and automated monthly salary hisaab.
+          <p className="text-slate-500 text-xs sm:text-sm mt-0.5">
+            Shift logging, multi-machine allocation, real-time upaad passbook, and monthly payroll hisaab.
           </p>
         </div>
 
@@ -1134,167 +1141,178 @@ export default function WorkersPage() {
           <Button
             variant="outline"
             onClick={() => setIsManageRolesOpen(true)}
-            className="shadow-xs text-xs bg-white hover:bg-gray-50"
+            className="h-9 text-xs bg-white text-slate-700 border-slate-300 hover:bg-slate-50 hover:text-slate-900 font-medium shadow-2xs"
           >
-            <Edit2 className="w-3.5 h-3.5 mr-1 text-indigo-600" />
-            Edit Roles
+            <Edit2 className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
+            Roles Manager
           </Button>
 
-          <Button onClick={handleOpenAdd} className="bg-indigo-600 hover:bg-indigo-700 shadow-xs text-xs sm:text-sm">
+          <Button
+            onClick={handleOpenAdd}
+            className="h-9 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs sm:text-sm shadow-xs"
+          >
             <Plus className="w-4 h-4 mr-1.5" />
             Add Worker
           </Button>
         </div>
       </div>
 
-      {/* ================= TOP INDUSTRY KPI INTELLIGENCE CARDS ================= */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {/* Card 1: Active Floor Staff */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Active Floor Karigars</p>
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-              <Users className="w-4 h-4" />
+      {/* ================= UNIFIED EXECUTIVE KPI STRIP ================= */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+          {/* Segment 1: Active Floor Staff */}
+          <div className="p-4 sm:p-5">
+            <div className="flex items-center justify-between text-3xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+              <span>Active Karigars</span>
+              <Users className="w-3.5 h-3.5 text-slate-400" />
             </div>
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-gray-900">{eligibleWorkersToday.length}</span>
-            <span className="text-xs text-gray-400">on duty as of today</span>
-          </div>
-          <div className="mt-2 flex items-center gap-2 text-2xs text-gray-500">
-            <span className="inline-flex items-center gap-0.5 text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-medium">
-              <Sun className="w-3 h-3" /> {workers.filter((w) => w.shift === 'Day' && w.status === 'active').length} Day
-            </span>
-            <span className="inline-flex items-center gap-0.5 text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-medium">
-              <Moon className="w-3 h-3" /> {workers.filter((w) => w.shift === 'Night' && w.status === 'active').length} Night
-            </span>
-          </div>
-        </div>
-
-        {/* Card 2: Today's Machine Output Shifts */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Machine Shifts Running</p>
-            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-emerald-600">{todaysTotalShiftUnits}</span>
-            <span className="text-xs text-gray-500 font-medium">
-              Shifts Worked Today ({todaysPresentWorkers} staff)
-            </span>
-          </div>
-          <div className="mt-2 flex items-center gap-2 text-2xs">
-            {todaysAbsent > 0 ? (
-              <span className="text-red-700 bg-red-50 px-1.5 py-0.5 rounded font-semibold border border-red-100">
-                {todaysAbsent} Absent
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl sm:text-3xl font-bold font-mono tracking-tight text-slate-900">
+                {eligibleWorkersToday.length}
               </span>
-            ) : (
-              <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-semibold border border-emerald-100">
-                All Active Karigars Present
+              <span className="text-2xs text-slate-500">on duty today</span>
+            </div>
+            <div className="flex items-center gap-1.5 mt-2 text-3xs font-mono text-slate-500">
+              <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">
+                {workers.filter((w) => w.shift === 'Day' && w.status === 'active').length} Day
               </span>
-            )}
-          </div>
-        </div>
-
-        {/* Card 3: Monthly Wages Accrued */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Gross Wages Accrued</p>
-            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-              <TrendingUp className="w-4 h-4" />
+              <span>&bull;</span>
+              <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">
+                {workers.filter((w) => w.shift === 'Night' && w.status === 'active').length} Night
+              </span>
             </div>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-gray-900 font-mono">
-              {formatCurrency(monthlyTotalGross)}
-            </span>
-          </div>
-          <p className="text-2xs text-gray-400 mt-2">Earned across month based on machine shifts & piece logs</p>
-        </div>
 
-        {/* Card 4: Net Balance Due / Advance Baki (Inherits Previous Month Balance!) */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-              {monthlyFinalNet >= 0 ? 'Net Salary Due (Baki)' : 'Net Advances Overdrawn (उपाड बाकी)'}
+          {/* Segment 2: Machine Shifts Running */}
+          <div className="p-4 sm:p-5">
+            <div className="flex items-center justify-between text-3xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+              <span>Floor Shifts Running</span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl sm:text-3xl font-bold font-mono tracking-tight text-emerald-600">
+                {todaysTotalShiftUnits}
+              </span>
+              <span className="text-2xs text-slate-500">shifts ({todaysPresentWorkers} staff)</span>
+            </div>
+            <div className="mt-2 text-3xs text-slate-500 font-medium">
+              {todaysAbsent > 0 ? (
+                <span className="text-rose-600 font-semibold">{todaysAbsent} staff absent</span>
+              ) : (
+                <span className="text-emerald-700 font-medium flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  100% floor present
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Segment 3: Monthly Wages Accrued */}
+          <div className="p-4 sm:p-5">
+            <div className="flex items-center justify-between text-3xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+              <span>Gross Earned ({salaryMonth})</span>
+              <TrendingUp className="w-3.5 h-3.5 text-slate-400" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl sm:text-3xl font-bold font-mono tracking-tight text-slate-900">
+                {formatCurrency(monthlyTotalGross)}
+              </span>
+            </div>
+            <p className="mt-2 text-3xs text-slate-400">Earned from shifts & piece work</p>
+          </div>
+
+          {/* Segment 4: Net Balance Due */}
+          <div className="p-4 sm:p-5 bg-slate-50/50">
+            <div className="flex items-center justify-between text-3xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+              <span>{monthlyFinalNet >= 0 ? 'Net Salary Due' : 'Advances Overdrawn'}</span>
+              <Wallet className={`w-3.5 h-3.5 ${monthlyFinalNet >= 0 ? 'text-slate-400' : 'text-rose-500'}`} />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className={`text-2xl sm:text-3xl font-bold font-mono tracking-tight ${
+                monthlyFinalNet >= 0 ? 'text-slate-900' : 'text-rose-600'
+              }`}>
+                {monthlyFinalNet < 0 ? `-${formatCurrency(Math.abs(monthlyFinalNet))}` : formatCurrency(monthlyFinalNet)}
+              </span>
+              <span className="text-3xs uppercase tracking-wider font-semibold text-slate-400">
+                {monthlyFinalNet >= 0 ? 'payable' : 'overdrawn'}
+              </span>
+            </div>
+            <p className="mt-2 text-3xs font-mono text-slate-500 truncate">
+              Gross {formatCurrency(monthlyTotalGross)} − Paid {formatCurrency(monthlyTotalPaid)}
+              {monthlyTotalPrevBalance !== 0 && (
+                <span className={`ml-1 font-semibold ${monthlyTotalPrevBalance < 0 ? 'text-rose-600' : 'text-slate-700'}`}>
+                  {monthlyTotalPrevBalance < 0 ? `− Prev ${formatCurrency(Math.abs(monthlyTotalPrevBalance))}` : `+ Prev ${formatCurrency(monthlyTotalPrevBalance)}`}
+                </span>
+              )}
             </p>
-            <div className={`p-2 rounded-lg ${monthlyFinalNet >= 0 ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700'}`}>
-              <Wallet className="w-4 h-4" />
-            </div>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className={`text-2xl font-bold font-mono ${monthlyFinalNet >= 0 ? 'text-amber-600' : 'text-rose-600'}`}>
-              {monthlyFinalNet < 0 ? `-${formatCurrency(Math.abs(monthlyFinalNet))}` : formatCurrency(monthlyFinalNet)}
-            </span>
-            <span className="text-2xs font-semibold text-gray-400">
-              {monthlyFinalNet >= 0 ? 'payable' : 'in advance'}
-            </span>
-          </div>
-          <p className="text-2xs text-gray-400 mt-2 font-mono">
-            Gross {formatCurrency(monthlyTotalGross)} − Paid {formatCurrency(monthlyTotalPaid)}
-            {monthlyTotalPrevBalance !== 0 && (
-              <span className={`ml-1 font-bold ${monthlyTotalPrevBalance < 0 ? 'text-amber-600' : 'text-indigo-600'}`}>
-                {monthlyTotalPrevBalance < 0 ? ` − Prev ${formatCurrency(Math.abs(monthlyTotalPrevBalance))}` : ` + Prev ${formatCurrency(monthlyTotalPrevBalance)}`}
-              </span>
-            )}
-          </p>
         </div>
       </div>
 
-      {/* ================= PRIMARY NAVIGATION TABS ================= */}
-      <div className="flex flex-wrap items-center gap-2 mb-6 bg-gray-100 p-1.5 rounded-xl w-fit">
+      {/* ================= PRIMARY NAVIGATION UNDERLINE TABS ================= */}
+      <div className="border-b border-slate-200 flex flex-wrap items-center gap-6">
         <button
           type="button"
           onClick={() => setActiveTab('attendance')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'attendance'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/60'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <Calendar className="w-4 h-4 text-emerald-600" />
-          <span>Daily Attendance (हाजिरी)</span>
+          <Calendar className="w-4 h-4" />
+          <span>Daily Attendance</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {todaysPresentWorkers}/{eligibleWorkersToday.length}
+          </span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('salary')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'salary'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/60'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <DollarSign className="w-4 h-4 text-indigo-600" />
-          <span>Salary & Upaad Hisaab</span>
+          <DollarSign className="w-4 h-4" />
+          <span>Salary & Hisaab Sheet</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {salaryMonth}
+          </span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('roster')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'roster'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/60'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <Users className="w-4 h-4 text-purple-600" />
-          <span>Staff Roster ({workers.length})</span>
+          <Users className="w-4 h-4" />
+          <span>Staff Directory</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {workers.length}
+          </span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('logs')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'logs'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/60'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          <Clock className="w-4 h-4 text-amber-600" />
-          <span>Piece-Rate Shift Logs ({logs.length})</span>
+          <Clock className="w-4 h-4" />
+          <span>Production Piece Logs</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {logs.length}
+          </span>
         </button>
       </div>
 
@@ -1307,39 +1325,41 @@ export default function WorkersPage() {
         /* ================= TAB 1: DAILY ATTENDANCE & OT SHEET ================= */
         <div className="space-y-6">
           {/* Date Selector & Fast Shift Bulk Actions */}
-          <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-2xs flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => handleShiftDate(-1)} className="h-9 w-9 p-0">
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-indigo-600" />
-                <Input
-                  type="date"
-                  value={attendanceDate}
-                  onChange={(e) => setAttendanceDate(e.target.value)}
-                  className="font-bold text-gray-900 h-9 w-44 text-sm"
-                />
+              <div className="flex items-center rounded-lg border border-slate-200 bg-white p-0.5 shadow-2xs">
+                <Button variant="ghost" size="sm" onClick={() => handleShiftDate(-1)} className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900">
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <div className="flex items-center gap-2 px-2 border-x border-slate-200">
+                  <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                  <Input
+                    type="date"
+                    value={attendanceDate}
+                    onChange={(e) => setAttendanceDate(e.target.value)}
+                    className="font-mono font-semibold text-slate-900 h-7 border-0 p-0 text-xs focus-visible:ring-0 w-32 bg-transparent"
+                  />
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => handleShiftDate(1)} className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900">
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
               </div>
-              <Button variant="outline" size="sm" onClick={() => handleShiftDate(1)} className="h-9 w-9 p-0">
-                <ChevronRight className="w-4 h-4" />
-              </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setAttendanceDate(new Date().toISOString().split('T')[0])}
-                className="h-9 text-xs"
+                className="h-8 text-xs font-medium text-slate-700 border-slate-200 hover:bg-slate-50"
               >
                 Today
               </Button>
 
               {todaysTotalUpaadAmount > 0 && (
                 <div
-                  className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-300 rounded-lg text-xs font-bold text-amber-900 font-mono shadow-2xs"
+                  className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-lg text-xs font-mono font-semibold text-amber-900"
                   title={`${todaysAdvances.length} advances recorded on ${formatDate(attendanceDate)}`}
                 >
                   <Wallet className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Today's Upaad: ₹{todaysTotalUpaadAmount.toLocaleString('en-IN')}</span>
+                  <span>Today's Advances: ₹{todaysTotalUpaadAmount.toLocaleString('en-IN')}</span>
                   <span className="text-2xs font-normal text-amber-700">({todaysAdvances.length} staff)</span>
                 </div>
               )}
@@ -1350,56 +1370,56 @@ export default function WorkersPage() {
                 onClick={() => handleMarkAllPresent('Day')}
                 size="sm"
                 variant="outline"
-                className="h-9 text-xs text-amber-800 border-amber-300 hover:bg-amber-50"
+                className="h-8 text-xs font-medium text-slate-700 border-slate-200 hover:bg-slate-50"
                 title="Mark all active Day Shift workers present (1.0 shift)"
               >
-                <Sun className="w-3.5 h-3.5 mr-1 text-amber-600" />
-                Mark Day Shift Present
+                <Sun className="w-3.5 h-3.5 mr-1.5 text-amber-500" />
+                Mark Day Shift
               </Button>
 
               <Button
                 onClick={() => handleMarkAllPresent('Night')}
                 size="sm"
                 variant="outline"
-                className="h-9 text-xs text-indigo-800 border-indigo-300 hover:bg-indigo-50"
+                className="h-8 text-xs font-medium text-slate-700 border-slate-200 hover:bg-slate-50"
                 title="Mark all active Night Shift workers present (1.0 shift)"
               >
-                <Moon className="w-3.5 h-3.5 mr-1 text-indigo-600" />
-                Mark Night Shift Present
+                <Moon className="w-3.5 h-3.5 mr-1.5 text-indigo-500" />
+                Mark Night Shift
               </Button>
 
               <Button
                 onClick={() => handleMarkAllPresent()}
                 size="sm"
-                className="h-9 text-xs bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+                className="h-8 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-2xs"
               >
-                <Check className="w-4 h-4 mr-1" />
+                <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-400" />
                 Mark All Present
               </Button>
             </div>
           </div>
 
           {/* Attendance Table Filter Bar */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
-            <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-50/50">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+            <div className="p-3.5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-slate-50/50">
               <div className="relative flex-1 max-w-sm">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <Input
                   placeholder="Search staff, machine, or role..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 text-xs h-9 bg-white"
+                  className="pl-8 text-xs h-8 bg-white border-slate-200"
                 />
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
                 {/* Shift Filter */}
-                <div className="flex items-center gap-1 bg-white border border-gray-200 p-0.5 rounded-lg text-xs font-medium">
+                <div className="flex items-center gap-1 bg-slate-100/90 border border-slate-200 p-0.5 rounded-lg text-xs font-medium">
                   <button
                     type="button"
                     onClick={() => setShiftFilter('all')}
                     className={`px-2.5 py-1 rounded transition-colors ${
-                      shiftFilter === 'all' ? 'bg-indigo-600 text-white font-bold' : 'text-gray-600 hover:bg-gray-100'
+                      shiftFilter === 'all' ? 'bg-white text-slate-900 font-bold shadow-2xs' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     All Shifts
@@ -1408,19 +1428,19 @@ export default function WorkersPage() {
                     type="button"
                     onClick={() => setShiftFilter('Day')}
                     className={`px-2 py-1 rounded flex items-center gap-1 transition-colors ${
-                      shiftFilter === 'Day' ? 'bg-amber-500 text-white font-bold' : 'text-gray-600 hover:bg-gray-100'
+                      shiftFilter === 'Day' ? 'bg-white text-slate-900 font-bold shadow-2xs' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <Sun className="w-3 h-3" /> Day
+                    <Sun className="w-3 h-3 text-amber-500" /> Day
                   </button>
                   <button
                     type="button"
                     onClick={() => setShiftFilter('Night')}
                     className={`px-2 py-1 rounded flex items-center gap-1 transition-colors ${
-                      shiftFilter === 'Night' ? 'bg-indigo-600 text-white font-bold' : 'text-gray-600 hover:bg-gray-100'
+                      shiftFilter === 'Night' ? 'bg-white text-slate-900 font-bold shadow-2xs' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <Moon className="w-3 h-3" /> Night
+                    <Moon className="w-3 h-3 text-indigo-500" /> Night
                   </button>
                 </div>
 
@@ -1429,7 +1449,7 @@ export default function WorkersPage() {
                   <select
                     value={stationFilter}
                     onChange={(e) => setStationFilter(e.target.value)}
-                    className="h-9 px-2.5 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="h-8 px-2.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900"
                   >
                     <option value="all">All Machines / Stations</option>
                     {uniqueStations.map((st) => (
@@ -1444,7 +1464,7 @@ export default function WorkersPage() {
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
-                  className="h-9 px-2.5 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="h-8 px-2.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900"
                 >
                   <option value="all">All Roles</option>
                   {rolesList.map((r) => (
@@ -1458,31 +1478,31 @@ export default function WorkersPage() {
 
             {/* Attendance Table */}
             {filteredAttendanceWorkers.length === 0 ? (
-              <div className="py-16 text-center text-gray-400 text-sm">
-                <Users className="w-10 h-10 mx-auto text-gray-300 mb-2" />
-                <p className="font-semibold text-gray-700">No Active Staff for {formatDate(attendanceDate)}</p>
-                <p className="text-xs text-gray-400 mt-1 max-w-md mx-auto">
+              <div className="py-16 text-center text-slate-400 text-sm">
+                <Users className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+                <p className="font-semibold text-slate-700 text-xs">No Active Staff for {formatDate(attendanceDate)}</p>
+                <p className="text-2xs text-slate-400 mt-1 max-w-md mx-auto">
                   Staff only appear on or after their recorded joining date. Check the date filter or staff joining dates in the roster.
                 </p>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-600">
-                  <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+                <table className="w-full text-left text-sm text-slate-600">
+                  <thead className="bg-slate-50/80 text-2xs uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
                     <tr>
-                      <th className="px-5 py-3.5">Staff Name & Machine</th>
-                      <th className="px-5 py-3.5">Role & Shift</th>
-                      <th className="px-5 py-3.5 text-center">
-                        <span className="block">Mark Attendance</span>
-                        <span className="text-2xs text-gray-400 font-normal lowercase">
-                          (1.0 single &bull; 1.5 &bull; 2.0 double machine)
+                      <th className="px-5 py-3">Staff Name & Machine</th>
+                      <th className="px-5 py-3">Role & Shift</th>
+                      <th className="px-5 py-3 text-center">
+                        <span className="block">Shift Units (Hajiri)</span>
+                        <span className="text-3xs text-slate-400 font-normal lowercase">
+                          (1.0 single &bull; 1.5 &bull; 2.0 double)
                         </span>
                       </th>
-                      <th className="px-5 py-3.5 text-center">Daily Status</th>
-                      <th className="px-5 py-3.5 text-center">Quick Upaad</th>
+                      <th className="px-5 py-3 text-center">Status</th>
+                      <th className="px-5 py-3 text-center">Quick Advance</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-slate-100">
                     {filteredAttendanceWorkers.map((w) => {
                       const record = getAttendanceForWorker(w.id, attendanceDate)
                       const status = record?.status || 'unmarked'
@@ -1490,29 +1510,29 @@ export default function WorkersPage() {
                       const otHours = record?.overtime_hours || 0
 
                       return (
-                        <tr key={w.id} className="hover:bg-gray-50/75 transition-colors">
+                        <tr key={w.id} className="hover:bg-slate-50/80 transition-colors">
                           {/* Worker Name & Machine */}
-                          <td className="px-5 py-3.5">
+                          <td className="px-5 py-3">
                             <button
                               type="button"
                               onClick={() => setSelectedProfileWorker(w)}
-                              className="font-bold text-gray-900 hover:text-indigo-600 text-left hover:underline block"
+                              className="font-bold text-slate-900 hover:text-slate-600 text-left hover:underline block text-xs"
                               title="Click to view Worker Profile & Passbook"
                             >
                               {w.name}
                             </button>
                             <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-2xs text-gray-500 flex items-center gap-1">
-                                <Building2 className="w-3 h-3 text-gray-400" />
+                              <span className="text-2xs text-slate-500 flex items-center gap-1">
+                                <Building2 className="w-3 h-3 text-slate-400" />
                                 {w.assigned_machine || 'General Floor'}
                               </span>
                             </div>
                           </td>
 
                           {/* Role & Shift */}
-                          <td className="px-5 py-3.5">
+                          <td className="px-5 py-3">
                             <span
-                              className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getRoleBadgeClass(
+                              className={`inline-block px-2 py-0.5 rounded text-2xs font-semibold ${getRoleBadgeClass(
                                 w.role
                               )}`}
                             >
@@ -1520,31 +1540,31 @@ export default function WorkersPage() {
                             </span>
                             <div className="mt-1 flex items-center gap-1.5">
                               {w.shift === 'Night' ? (
-                                <span className="inline-flex items-center gap-0.5 text-2xs font-semibold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">
-                                  <Moon className="w-2.5 h-2.5" /> Night Shift
+                                <span className="inline-flex items-center gap-0.5 text-3xs font-semibold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">
+                                  <Moon className="w-2.5 h-2.5" /> Night
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-0.5 text-2xs font-semibold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
-                                  <Sun className="w-2.5 h-2.5" /> Day Shift
+                                <span className="inline-flex items-center gap-0.5 text-3xs font-semibold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                                  <Sun className="w-2.5 h-2.5" /> Day
                                 </span>
                               )}
-                              <span className="text-2xs text-gray-400">
+                              <span className="text-2xs font-mono text-slate-500">
                                 {formatCurrency(w.wage_rate)} / {w.wage_type === 'piece_rate' ? 'piece' : w.wage_type}
                               </span>
                             </div>
                           </td>
 
-                          {/* Interactive Attendance Toggle Pills: Includes 1.5 and 2.0 Double Machine! */}
-                          <td className="px-5 py-3.5 text-center">
-                            <div className="inline-flex items-center gap-1 p-1 bg-gray-100 rounded-lg shadow-2xs">
+                          {/* Interactive Segmented Shift Controller */}
+                          <td className="px-5 py-3 text-center">
+                            <div className="inline-flex items-center p-0.5 bg-slate-100 rounded-lg border border-slate-200 font-mono text-xs shadow-2xs">
                               {/* Absent (0) */}
                               <button
                                 type="button"
                                 onClick={() => handleSetAttendance(w.id, 'absent', 0, 0)}
-                                className={`px-2 py-1 rounded text-xs font-bold transition-all ${
+                                className={`px-2 py-1 rounded transition-colors font-bold text-xs ${
                                   status === 'absent'
-                                    ? 'bg-rose-600 text-white shadow-xs scale-105'
-                                    : 'text-gray-600 hover:bg-gray-200'
+                                    ? 'bg-rose-600 text-white shadow-2xs'
+                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                                 }`}
                                 title="Absent (0 Shifts)"
                               >
@@ -1555,109 +1575,113 @@ export default function WorkersPage() {
                               <button
                                 type="button"
                                 onClick={() => handleSetAttendance(w.id, 'half_day', 0.5, otHours)}
-                                className={`px-2 py-1 rounded text-xs font-bold transition-all ${
+                                className={`px-2 py-1 rounded transition-colors font-bold text-xs ${
                                   effectiveUnits === 0.5 && status === 'half_day'
-                                    ? 'bg-sky-600 text-white shadow-xs scale-105'
-                                    : 'text-gray-600 hover:bg-gray-200'
+                                    ? 'bg-sky-600 text-white shadow-2xs'
+                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                                 }`}
                                 title="Half Day (0.5 Present)"
                               >
-                                0.5 HD
+                                0.5
                               </button>
 
                               {/* 1.0 Present: Single Machine Full Day */}
                               <button
                                 type="button"
                                 onClick={() => handleSetAttendance(w.id, 'present', 1.0, otHours)}
-                                className={`px-2.5 py-1 rounded text-xs font-bold transition-all ${
+                                className={`px-2.5 py-1 rounded transition-colors font-bold text-xs ${
                                   effectiveUnits === 1.0 && status === 'present'
-                                    ? 'bg-emerald-600 text-white shadow-xs scale-105'
-                                    : 'text-gray-600 hover:bg-gray-200'
+                                    ? 'bg-emerald-600 text-white shadow-2xs'
+                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                                 }`}
                                 title="1.0 Present (Single Machine Full Day)"
                               >
-                                1.0 P
+                                1.0
                               </button>
 
                               {/* 1.5 Present: 1 Full Day + 2nd Machine Half Day */}
                               <button
                                 type="button"
                                 onClick={() => handleSetAttendance(w.id, 'present', 1.5, otHours)}
-                                className={`px-2.5 py-1 rounded text-xs font-bold transition-all ${
+                                className={`px-2.5 py-1 rounded transition-colors font-bold text-xs ${
                                   effectiveUnits === 1.5
-                                    ? 'bg-indigo-600 text-white shadow-xs scale-105 font-mono'
-                                    : 'text-indigo-700 hover:bg-indigo-100 bg-indigo-50/70'
+                                    ? 'bg-indigo-600 text-white shadow-2xs'
+                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                                 }`}
                                 title="1.5 Present (1 Machine Full Day + 2nd Machine Half Day)"
                               >
-                                1.5 P
+                                1.5
                               </button>
 
                               {/* 2.0 Present: DOUBLE MACHINE OPERATOR (2 Full Machines Ran!) */}
                               <button
                                 type="button"
                                 onClick={() => handleSetAttendance(w.id, 'present', 2.0, otHours)}
-                                className={`px-2.5 py-1 rounded text-xs font-bold transition-all ${
+                                className={`px-2.5 py-1 rounded transition-colors font-bold text-xs ${
                                   effectiveUnits >= 2.0
-                                    ? 'bg-purple-700 text-white shadow-xs scale-105 font-mono'
-                                    : 'text-purple-700 hover:bg-purple-100 bg-purple-50/70 font-semibold'
+                                    ? 'bg-slate-900 text-white shadow-2xs'
+                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                                 }`}
                                 title="2.0 Present (Double Machine - Operator Ran 2 Full Machines!)"
                               >
-                                2.0 2P
+                                2.0
                               </button>
 
                               {/* Holiday / Factory Off */}
                               <button
                                 type="button"
                                 onClick={() => handleSetAttendance(w.id, 'holiday', 0, 0)}
-                                className={`px-2 py-1 rounded text-xs font-bold transition-all ${
+                                className={`px-2 py-1 rounded transition-colors font-semibold text-xs ${
                                   status === 'holiday'
-                                    ? 'bg-slate-700 text-white shadow-xs scale-105'
-                                    : 'text-gray-400 hover:bg-gray-200'
+                                    ? 'bg-slate-700 text-white shadow-2xs'
+                                    : 'text-slate-400 hover:text-slate-700 hover:bg-slate-200/60'
                                 }`}
                                 title="Holiday / Factory Off"
                               >
-                                OFF
+                                Off
                               </button>
                             </div>
                           </td>
 
-                          {/* Daily Status Badge: Accurately reflects 2.0 and 1.5 shifts! */}
-                          <td className="px-5 py-3.5 text-center">
+                          {/* Daily Status Badge */}
+                          <td className="px-5 py-3 text-center">
                             {effectiveUnits >= 2.0 ? (
-                              <span className="px-2.5 py-1 bg-purple-100 text-purple-900 border border-purple-300 rounded-md text-xs font-bold font-mono">
-                                2.0 P (Double Machine)
+                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-slate-900 text-white rounded text-2xs font-bold font-mono">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                                2.0 Double
                               </span>
                             ) : effectiveUnits === 1.5 ? (
-                              <span className="px-2.5 py-1 bg-indigo-100 text-indigo-900 border border-indigo-300 rounded-md text-xs font-bold font-mono">
-                                1.5 P (1.5 Machine)
+                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-2xs font-semibold font-mono">
+                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                                1.5 Machine
                               </span>
                             ) : effectiveUnits === 1.0 && status === 'present' ? (
-                              <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md text-xs font-bold font-mono">
-                                1.0 P (Single Machine)
+                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded text-2xs font-semibold font-mono">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                1.0 Single
                               </span>
                             ) : effectiveUnits === 0.5 && status === 'half_day' ? (
-                              <span className="px-2.5 py-1 bg-sky-50 text-sky-700 border border-sky-200 rounded-md text-xs font-bold font-mono">
-                                0.5 P (Half Day)
+                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-sky-50 text-sky-800 border border-sky-200 rounded text-2xs font-semibold font-mono">
+                                <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+                                0.5 Half
                               </span>
                             ) : status === 'absent' ? (
-                              <span className="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-md text-xs font-bold">
+                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-rose-50 text-rose-700 border border-rose-200 rounded text-2xs font-semibold">
+                                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                                 Absent
                               </span>
                             ) : status === 'holiday' ? (
-                              <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md text-xs font-medium">
+                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-2xs font-medium">
                                 Off
                               </span>
                             ) : (
-                              <span className="text-2xs text-gray-400 italic">Unmarked</span>
+                              <span className="text-2xs text-slate-400 italic">Unmarked</span>
                             )}
                           </td>
 
-                          {/* Quick Upaad (Advance) Button & Live Indicators */}
-                          <td className="px-5 py-3.5 text-center">
+                          {/* Quick Advance (Upaad) Button & Live Indicators */}
+                          <td className="px-5 py-3 text-center">
                             <div className="flex flex-col items-center gap-1">
-                              {/* Live indicator if worker received upaad today or this month */}
                               {(() => {
                                 const workerTodayUpaad = salaryPayments
                                   .filter(
@@ -1682,18 +1706,18 @@ export default function WorkersPage() {
                                   <>
                                     {workerTodayUpaad > 0 ? (
                                       <span
-                                        className="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded font-bold text-2xs font-mono inline-flex items-center gap-1 shadow-2xs cursor-pointer hover:bg-amber-200"
+                                        className="px-1.5 py-0.5 bg-amber-50 text-amber-900 border border-amber-200 rounded text-3xs font-mono font-bold inline-flex items-center gap-1 cursor-pointer hover:bg-amber-100"
                                         onClick={() => setSelectedProfileWorker(w)}
-                                        title={`Today's Upaad: ₹${workerTodayUpaad.toLocaleString('en-IN')}. Click to view passbook.`}
+                                        title={`Today's Advance: ₹${workerTodayUpaad.toLocaleString('en-IN')}`}
                                       >
-                                        <Wallet className="w-2.5 h-2.5 text-amber-700" />
+                                        <Wallet className="w-2.5 h-2.5 text-amber-600" />
                                         Today: ₹{workerTodayUpaad.toLocaleString('en-IN')}
                                       </span>
                                     ) : workerMonthUpaad > 0 ? (
                                       <span
-                                        className="text-2xs text-gray-500 font-mono cursor-pointer hover:text-gray-700"
+                                        className="text-3xs text-slate-500 font-mono cursor-pointer hover:text-slate-800"
                                         onClick={() => setSelectedProfileWorker(w)}
-                                        title={`Month Upaad: ₹${workerMonthUpaad.toLocaleString('en-IN')}. Click to view passbook.`}
+                                        title={`Month Advance: ₹${workerMonthUpaad.toLocaleString('en-IN')}`}
                                       >
                                         Mo: ₹{workerMonthUpaad.toLocaleString('en-IN')}
                                       </span>
@@ -1706,11 +1730,11 @@ export default function WorkersPage() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => handleOpenQuickUpaad(w)}
-                                className="h-7 text-2xs px-2 text-indigo-700 border-indigo-200 hover:bg-indigo-50"
-                                title="Give Advance / Kharcha"
+                                className="h-6 text-2xs px-2 text-slate-700 border-slate-200 hover:bg-slate-100"
+                                title="Record Advance / Upaad"
                               >
-                                <Wallet className="w-3 h-3 mr-1 text-indigo-600" />
-                                + Upaad
+                                <Plus className="w-2.5 h-2.5 mr-0.5 text-slate-500" />
+                                Upaad
                               </Button>
                             </div>
                           </td>
@@ -1727,48 +1751,51 @@ export default function WorkersPage() {
         /* ================= TAB 2: GIVE SALARY & UPAAD HISAAB ================= */
         <div className="space-y-6">
           {/* Month Selector Bar & Summary */}
-          <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Label htmlFor="salary-month-select" className="text-xs font-bold uppercase text-gray-500">
-                Salary Month:
-              </Label>
-              <Input
-                id="salary-month-select"
-                type="month"
-                value={salaryMonth}
-                onChange={(e) => setSalaryMonth(e.target.value)}
-                className="font-bold text-gray-900 h-9 w-44 text-sm"
-              />
-              <span className="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg font-mono">
-                {salarySummary[0]?.daysInMonth || 30} Days in Month
+          <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-2xs flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg border border-slate-200 bg-white shadow-2xs">
+                <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                <Label htmlFor="salary-month-select" className="text-3xs font-bold uppercase tracking-wider text-slate-400">
+                  Month:
+                </Label>
+                <Input
+                  id="salary-month-select"
+                  type="month"
+                  value={salaryMonth}
+                  onChange={(e) => setSalaryMonth(e.target.value)}
+                  className="font-mono font-semibold text-slate-900 h-7 border-0 p-0 text-xs focus-visible:ring-0 w-28 bg-transparent"
+                />
+              </div>
+              <span className="text-xs font-mono font-semibold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg border border-slate-200">
+                {salarySummary[0]?.daysInMonth || 30} Days
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 text-xs">
-              <div className="bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg">
-                <span className="text-gray-600">Current Month Gross:</span>
-                <span className="ml-1.5 font-bold font-mono text-base text-blue-700">
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <div className="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                <span className="text-3xs uppercase tracking-wider font-semibold text-slate-500">Gross:</span>
+                <span className="font-mono font-bold text-slate-900">
                   {formatCurrency(monthlyTotalGross)}
                 </span>
               </div>
-              <div className="bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg">
-                <span className="text-gray-600">Month Upaad Deducted:</span>
-                <span className="ml-1.5 font-bold font-mono text-base text-amber-700">
+              <div className="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                <span className="text-3xs uppercase tracking-wider font-semibold text-slate-500">Advances:</span>
+                <span className="font-mono font-bold text-amber-700">
                   {formatCurrency(monthlyTotalPaid)}
                 </span>
               </div>
               {monthlyTotalPrevBalance !== 0 && (
                 <div
-                  className={`px-3 py-1.5 rounded-lg border ${
+                  className={`px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
                     monthlyTotalPrevBalance < 0
-                      ? 'bg-amber-100/70 border-amber-300 text-amber-950'
-                      : 'bg-indigo-50 border-indigo-200 text-indigo-950'
+                      ? 'bg-amber-50/80 border-amber-200 text-amber-950'
+                      : 'bg-slate-50 border-slate-200 text-slate-900'
                   }`}
                 >
-                  <span className="text-2xs font-semibold uppercase tracking-wider block">
-                    Prev Carried ({salarySummary[0]?.prevMonthLabel}):
+                  <span className="text-3xs uppercase tracking-wider font-semibold text-slate-500">
+                    Prev ({salarySummary[0]?.prevMonthLabel}):
                   </span>
-                  <span className="font-bold font-mono text-base">
+                  <span className="font-mono font-bold">
                     {monthlyTotalPrevBalance < 0
                       ? `-${formatCurrency(Math.abs(monthlyTotalPrevBalance))}`
                       : `+${formatCurrency(monthlyTotalPrevBalance)}`}
@@ -1776,17 +1803,17 @@ export default function WorkersPage() {
                 </div>
               )}
               <div
-                className={`px-3 py-1.5 rounded-lg border ${
+                className={`px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
                   monthlyFinalNet >= 0
-                    ? 'bg-emerald-50 border-emerald-200'
-                    : 'bg-rose-50 border-rose-200'
+                    ? 'bg-emerald-50/80 border-emerald-200 text-emerald-950'
+                    : 'bg-rose-50/80 border-rose-200 text-rose-950'
                 }`}
               >
-                <span className="text-gray-600">
-                  {monthlyFinalNet >= 0 ? 'Net Payable Balance:' : 'Net Advance Excess:'}
+                <span className="text-3xs uppercase tracking-wider font-semibold text-slate-500">
+                  {monthlyFinalNet >= 0 ? 'Net Payable:' : 'Advance Excess:'}
                 </span>
                 <span
-                  className={`ml-1.5 font-bold font-mono text-base ${
+                  className={`font-mono font-bold ${
                     monthlyFinalNet >= 0 ? 'text-emerald-700' : 'text-rose-700'
                   }`}
                 >
@@ -1799,78 +1826,78 @@ export default function WorkersPage() {
           </div>
 
           {/* Salary Statement Table */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+            <div className="p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <div>
-                <h3 className="font-bold text-gray-900 text-sm">
-                  Monthly Worker Salary Sheet & Advance Register — {salaryMonth}
+                <h3 className="font-bold text-slate-900 text-xs">
+                  Monthly Worker Salary Sheet & Advance Register &mdash; {salaryMonth}
                 </h3>
-                <p className="text-xs text-gray-500">
+                <p className="text-2xs text-slate-500 mt-0.5">
                   Automated hisaab calculated from machine shifts worked (including 2.0 double machine days & 1.5 machine days), piece work logs, and advance deductions.
                 </p>
               </div>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-gray-600">
-                <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50/80 text-2xs uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
                   <tr>
-                    <th className="px-6 py-3.5">Staff Member</th>
-                    <th className="px-6 py-3.5">Role & Wage</th>
-                    <th className="px-6 py-3.5 text-center">Shifts Worked (Hajiri)</th>
-                    <th className="px-6 py-3.5 text-right">Gross Earned (₹)</th>
-                    <th className="px-6 py-3.5 text-right">Upaad / Paid (₹)</th>
-                    <th className="px-6 py-3.5 text-right">Balance Due (₹)</th>
-                    <th className="px-6 py-3.5 text-center">Actions</th>
+                    <th className="px-5 py-3">Staff Member</th>
+                    <th className="px-5 py-3">Role & Wage</th>
+                    <th className="px-5 py-3 text-center">Shifts Worked (Hajiri)</th>
+                    <th className="px-5 py-3 text-right">Gross Earned (₹)</th>
+                    <th className="px-5 py-3 text-right">Upaad / Paid (₹)</th>
+                    <th className="px-5 py-3 text-right">Balance Due (₹)</th>
+                    <th className="px-5 py-3 text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-slate-100">
                   {salarySummary.map((item) => {
                     const w = item.worker
                     return (
-                      <tr key={w.id} className="hover:bg-gray-50/75 transition-colors">
+                      <tr key={w.id} className="hover:bg-slate-50/80 transition-colors">
                         {/* Worker Name */}
-                        <td className="px-6 py-4">
+                        <td className="px-5 py-3">
                           <button
                             type="button"
                             onClick={() => setSelectedProfileWorker(w)}
-                            className="font-bold text-gray-900 hover:text-indigo-600 text-left hover:underline text-sm block"
+                            className="font-bold text-slate-900 hover:text-slate-600 text-left hover:underline text-xs block"
                             title="Click to view Worker Profile & Passbook"
                           >
                             {w.name}
                           </button>
                           {w.phone && (
-                            <span className="text-2xs text-gray-400 font-mono block mt-0.5">
+                            <span className="text-2xs text-slate-400 font-mono block mt-0.5">
                               {w.phone}
                             </span>
                           )}
                         </td>
 
                         {/* Role & Wage */}
-                        <td className="px-6 py-4">
+                        <td className="px-5 py-3">
                           <span
-                            className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getRoleBadgeClass(
+                            className={`inline-block px-2 py-0.5 rounded text-2xs font-semibold ${getRoleBadgeClass(
                               w.role
                             )}`}
                           >
                             {w.role}
                           </span>
-                          <div className="text-2xs text-gray-600 mt-1">
+                          <div className="text-2xs text-slate-600 mt-1">
                             {w.wage_type === 'monthly' ? (
                               <div>
-                                <span className="font-semibold text-gray-900">
+                                <span className="font-semibold text-slate-900 font-mono">
                                   {formatCurrency(w.wage_rate)} / mo
                                 </span>
-                                <span className="block text-indigo-700 font-mono font-medium">
+                                <span className="block text-slate-500 font-mono text-3xs">
                                   ÷ {item.daysInMonth} days = ₹{Math.round(item.perDayRate)}/day
                                 </span>
                               </div>
                             ) : w.wage_type === 'daily' ? (
-                              <span className="font-semibold text-gray-900">
+                              <span className="font-semibold text-slate-900 font-mono">
                                 {formatCurrency(w.wage_rate)} / day
                               </span>
                             ) : (
-                              <span className="font-semibold text-gray-900">
+                              <span className="font-semibold text-slate-900 font-mono">
                                 {formatCurrency(w.wage_rate)} / pc
                               </span>
                             )}
@@ -1878,84 +1905,84 @@ export default function WorkersPage() {
                         </td>
 
                         {/* Shifts Worked (Hajiri) - Displays 2.0 and 1.5 breakdown! */}
-                        <td className="px-6 py-4 text-center">
-                          <span className="font-bold text-gray-900 text-sm font-mono">
+                        <td className="px-5 py-3 text-center">
+                          <span className="font-bold text-slate-900 text-xs font-mono">
                             {item.totalShiftUnits} Hajiri
                           </span>
-                          <p className="text-2xs text-gray-500 mt-0.5">
+                          <p className="text-3xs text-slate-500 mt-0.5">
                             {item.doubleMachineDays > 0 && (
-                              <span className="text-purple-700 font-bold font-mono">
-                                {item.doubleMachineDays} × 2P (Double)&bull;{' '}
+                              <span className="text-slate-900 font-bold font-mono">
+                                {item.doubleMachineDays} &times; 2P (Double)&bull;{' '}
                               </span>
                             )}
                             {item.oneAndHalfDays > 0 && (
                               <span className="text-indigo-700 font-bold font-mono">
-                                {item.oneAndHalfDays} × 1.5P &bull;{' '}
+                                {item.oneAndHalfDays} &times; 1.5P &bull;{' '}
                               </span>
                             )}
-                            <span>{item.singleMachineDays} × 1P</span>
-                            {item.halfDays > 0 && <span> &bull; {item.halfDays} × 0.5P</span>}
+                            <span>{item.singleMachineDays} &times; 1P</span>
+                            {item.halfDays > 0 && <span> &bull; {item.halfDays} &times; 0.5P</span>}
                           </p>
                           {w.wage_type === 'piece_rate' ? (
-                            <span className="text-2xs text-indigo-600 font-medium block mt-0.5">
+                            <span className="text-3xs text-slate-600 font-medium block mt-0.5">
                               {item.pieceEarnings > 0
                                 ? `= ${formatCurrency(item.pieceEarnings)} (Piece work)`
-                                : 'Piece Rate (Logs se banegi)'}
+                                : 'Piece Rate (Calculated from logs)'}
                             </span>
                           ) : (
-                            <span className="text-2xs text-emerald-700 font-mono font-medium block mt-0.5">
+                            <span className="text-3xs text-emerald-700 font-mono font-medium block mt-0.5">
                               = {formatCurrency(item.baseEarned)}
                             </span>
                           )}
                         </td>
 
                         {/* Gross Earned */}
-                        <td className="px-6 py-4 text-right font-mono font-bold text-gray-900">
+                        <td className="px-5 py-3 text-right font-mono font-bold text-xs text-slate-900 tabular-nums">
                           {formatCurrency(item.grossEarned)}
                         </td>
 
                         {/* Advances / Upaad Paid */}
-                        <td className="px-6 py-4 text-right font-mono font-semibold text-emerald-600">
+                        <td className="px-5 py-3 text-right font-mono font-semibold text-xs text-amber-700 tabular-nums">
                           {formatCurrency(item.totalPaid)}
                           {item.paymentsList.length > 0 && (
-                            <span className="text-2xs text-gray-400 block font-normal">
+                            <span className="text-3xs text-slate-400 block font-normal">
                               ({item.paymentsList.length} vouchers)
                             </span>
                           )}
                         </td>
 
                         {/* Balance Due (Negative if Upaad > Gross, inherits previous month balance) */}
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-5 py-3 text-right">
                           {item.balanceDue < 0 ? (
                             <div>
-                              <span className="font-mono font-bold text-base text-rose-600 block">
+                              <span className="font-mono font-bold text-xs text-rose-600 block tabular-nums">
                                 -{formatCurrency(Math.abs(item.balanceDue))}
                               </span>
-                              <span className="text-2xs font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 inline-block mt-0.5">
+                              <span className="text-3xs font-semibold text-rose-700 bg-rose-50 px-1 py-0.5 rounded border border-rose-200 inline-block mt-0.5">
                                 Advance Overdrawn
                               </span>
                             </div>
                           ) : item.balanceDue > 0 ? (
                             <div>
-                              <span className="font-mono font-bold text-base text-emerald-700 block">
+                              <span className="font-mono font-bold text-xs text-emerald-700 block tabular-nums">
                                 {formatCurrency(item.balanceDue)}
                               </span>
-                              <span className="text-2xs font-semibold text-emerald-700 block mt-0.5">
-                                To Pay
+                              <span className="text-3xs font-semibold text-emerald-700 block mt-0.5">
+                                Payable
                               </span>
                             </div>
                           ) : (
-                            <span className="font-mono font-bold text-base text-gray-400">₹0</span>
+                            <span className="font-mono font-semibold text-xs text-slate-400">₹0</span>
                           )}
 
                           {/* Distinct indicator showing inherited previous month calculation */}
                           {item.previousBalance !== 0 && (
                             <div className="mt-1">
                               <span
-                                className={`text-2xs px-1.5 py-0.5 rounded font-mono font-semibold inline-block border ${
+                                className={`text-3xs px-1.5 py-0.5 rounded font-mono font-semibold inline-block border ${
                                   item.previousBalance < 0
-                                    ? 'bg-amber-100 text-amber-900 border-amber-300'
-                                    : 'bg-indigo-50 text-indigo-900 border-indigo-200'
+                                    ? 'bg-amber-50 text-amber-900 border-amber-200'
+                                    : 'bg-slate-50 text-slate-900 border-slate-200'
                                 }`}
                                 title={`Inherited from ${item.prevMonthLabel}: ${
                                   item.previousBalance < 0
@@ -1973,15 +2000,15 @@ export default function WorkersPage() {
                         </td>
 
                         {/* Actions: Give Salary + Quick Upaad + Hisaab Slip */}
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-5 py-3 text-center">
                           <div className="flex items-center justify-center gap-1.5">
                             {item.balanceDue > 0 ? (
                               <Button
                                 size="sm"
                                 onClick={() => handleOpenPaySalary(w, item.balanceDue)}
-                                className="h-8 text-xs px-2.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+                                className="h-7 text-xs px-2.5 bg-slate-900 hover:bg-slate-800 text-white shadow-2xs font-semibold"
                               >
-                                <DollarSign className="w-3.5 h-3.5 mr-0.5" />
+                                <DollarSign className="w-3 h-3 mr-0.5 text-emerald-400" />
                                 Pay
                               </Button>
                             ) : (
@@ -1989,10 +2016,9 @@ export default function WorkersPage() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => handleOpenPaySalary(w, 0)}
-                                className="h-8 text-xs px-2 text-gray-500 border-gray-200 hover:bg-gray-50"
+                                className="h-7 text-xs px-2 text-slate-500 border-slate-200 hover:bg-slate-50"
                                 title="Worker has excess advance / settled"
                               >
-                                <DollarSign className="w-3.5 h-3.5 mr-0.5" />
                                 Settle
                               </Button>
                             )}
@@ -2001,10 +2027,10 @@ export default function WorkersPage() {
                               size="sm"
                               variant="outline"
                               onClick={() => handleOpenQuickUpaad(w)}
-                              className="h-8 text-xs px-2 text-indigo-700 border-indigo-200 hover:bg-indigo-50"
+                              className="h-7 text-xs px-2 text-slate-700 border-slate-200 hover:bg-slate-100"
                               title="Give Advance / Upaad"
                             >
-                              <Wallet className="w-3 h-3 mr-0.5 text-indigo-600" />
+                              <Wallet className="w-3 h-3 mr-0.5 text-slate-500" />
                               Upaad
                             </Button>
 
@@ -2012,11 +2038,11 @@ export default function WorkersPage() {
                               size="sm"
                               variant="outline"
                               onClick={() => setHisaabSlipWorker(w)}
-                              className="h-8 text-xs px-2 text-gray-700 border-gray-300 hover:bg-gray-100"
+                              className="h-7 text-xs px-2 text-slate-700 border-slate-200 hover:bg-slate-100"
                               title="Generate printable / WhatsApp Hisaab Slip"
                             >
-                              <Receipt className="w-3.5 h-3.5 mr-0.5 text-gray-600" />
-                              Hisaab
+                              <Receipt className="w-3 h-3 mr-0.5 text-slate-500" />
+                              Slip
                             </Button>
                           </div>
                         </td>
@@ -2029,25 +2055,25 @@ export default function WorkersPage() {
           </div>
 
           {/* ================= UPAAD (ADVANCES) REGISTER ================= */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
-            <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-amber-50/40">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+            <div className="p-3.5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50">
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="p-1.5 bg-amber-100 text-amber-800 rounded-lg">
-                    <Wallet className="w-4 h-4" />
+                  <div className="p-1 bg-slate-100 text-slate-700 rounded-md border border-slate-200">
+                    <Wallet className="w-3.5 h-3.5 text-slate-700" />
                   </div>
-                  <h3 className="font-bold text-gray-900 text-sm">
-                    Advances & Upaad Register (उपाड रजिस्टर) — {salaryMonth}
+                  <h3 className="font-bold text-slate-900 text-xs">
+                    Advances & Upaad Register &mdash; {salaryMonth}
                   </h3>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-2xs text-slate-500 mt-0.5">
                   Itemized record of all cash, UPI, and bank advances given to staff. Automatically deducted from monthly salary balances.
                 </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold px-3 py-1.5 bg-amber-100 text-amber-900 rounded-lg border border-amber-300 font-mono">
-                  Month Total: {formatCurrency(
+                <span className="text-xs font-mono font-bold px-2.5 py-1 bg-amber-50 text-amber-900 rounded-lg border border-amber-200">
+                  Total: {formatCurrency(
                     salaryPayments
                       .filter(
                         (p) =>
@@ -2061,10 +2087,10 @@ export default function WorkersPage() {
                   <Button
                     size="sm"
                     onClick={() => handleOpenQuickUpaad(workers[0])}
-                    className="h-8 text-xs bg-amber-600 hover:bg-amber-700 text-white shadow-xs"
+                    className="h-7 text-xs bg-slate-900 hover:bg-slate-800 text-white shadow-2xs font-semibold"
                   >
                     <Plus className="w-3.5 h-3.5 mr-1" />
-                    + Record Upaad
+                    Record Advance
                   </Button>
                 )}
               </div>
@@ -2075,25 +2101,25 @@ export default function WorkersPage() {
                 p.payment_type === 'Advance' &&
                 (p.month === salaryMonth || (p.payment_date && p.payment_date.startsWith(salaryMonth)))
             ).length === 0 ? (
-              <div className="py-10 text-center text-gray-400 text-xs">
-                <Wallet className="w-8 h-8 mx-auto text-gray-300 mb-2" />
-                <p className="font-semibold text-gray-700">No Upaad / Advances recorded for {salaryMonth}</p>
-                <p className="text-2xs text-gray-400 mt-0.5">Click "+ Record Upaad" to log cash or UPI kharcha for any worker.</p>
+              <div className="py-10 text-center text-slate-400 text-xs">
+                <Wallet className="w-7 h-7 mx-auto text-slate-300 mb-2" />
+                <p className="font-semibold text-slate-700 text-xs">No Advances recorded for {salaryMonth}</p>
+                <p className="text-2xs text-slate-400 mt-0.5">Click "Record Advance" to log cash or UPI kharcha for any worker.</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-600">
-                  <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+                <table className="w-full text-left text-sm text-slate-600">
+                  <thead className="bg-slate-50/80 text-2xs uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
                     <tr>
-                      <th className="px-6 py-3">Date</th>
-                      <th className="px-6 py-3">Worker Name</th>
-                      <th className="px-6 py-3">Payment Mode</th>
-                      <th className="px-6 py-3">Reason / Note</th>
-                      <th className="px-6 py-3 text-right">Advance Amount</th>
-                      <th className="px-6 py-3 text-center">Action</th>
+                      <th className="px-5 py-3">Date</th>
+                      <th className="px-5 py-3">Worker Name</th>
+                      <th className="px-5 py-3">Payment Mode</th>
+                      <th className="px-5 py-3">Reason / Note</th>
+                      <th className="px-5 py-3 text-right">Advance Amount</th>
+                      <th className="px-5 py-3 text-center">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-slate-100">
                     {salaryPayments
                       .filter(
                         (p) =>
@@ -2103,44 +2129,44 @@ export default function WorkersPage() {
                       .map((p) => {
                         const targetWorker = workers.find((w) => w.id === p.worker_id)
                         return (
-                          <tr key={p.id} className="hover:bg-amber-50/20 transition-colors">
-                            <td className="px-6 py-3 font-mono text-xs text-gray-700 font-medium">
+                          <tr key={p.id} className="hover:bg-slate-50/80 transition-colors">
+                            <td className="px-5 py-3 font-mono text-xs text-slate-700 font-medium">
                               {formatDate(p.payment_date)}
                             </td>
-                            <td className="px-6 py-3">
+                            <td className="px-5 py-3">
                               {targetWorker ? (
                                 <button
                                   type="button"
                                   onClick={() => setSelectedProfileWorker(targetWorker)}
-                                  className="font-bold text-gray-900 hover:text-indigo-600 text-left hover:underline text-xs block"
+                                  className="font-bold text-slate-900 hover:text-slate-600 text-left hover:underline text-xs block"
                                   title="View Worker Profile & Passbook"
                                 >
                                   {p.worker_name}
                                 </button>
                               ) : (
-                                <span className="font-bold text-gray-900 text-xs">{p.worker_name}</span>
+                                <span className="font-bold text-slate-900 text-xs">{p.worker_name}</span>
                               )}
                             </td>
-                            <td className="px-6 py-3 text-xs">
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 text-gray-800 border border-gray-200 font-medium">
+                            <td className="px-5 py-3 text-xs">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 text-3xs font-medium">
                                 {p.payment_mode === 'Cash'
-                                  ? '💵 Cash'
+                                  ? 'Cash'
                                   : p.payment_mode === 'UPI'
-                                  ? '📱 UPI'
+                                  ? 'UPI'
                                   : p.payment_mode}
                               </span>
                             </td>
-                            <td className="px-6 py-3 text-xs text-gray-600 italic">
-                              {p.notes || 'Weekly Kharcha'}
+                            <td className="px-5 py-3 text-xs text-slate-500 italic">
+                              {p.notes || 'Weekly Advance'}
                             </td>
-                            <td className="px-6 py-3 text-right font-mono font-bold text-rose-600 text-sm">
+                            <td className="px-5 py-3 text-right font-mono font-bold text-amber-700 text-xs tabular-nums">
                               -{formatCurrency(p.amount)}
                             </td>
-                            <td className="px-6 py-3 text-center">
+                            <td className="px-5 py-3 text-center">
                               <button
                                 type="button"
                                 onClick={() => handleDeletePayment(p.id)}
-                                className="p-1.5 text-gray-400 hover:text-rose-600 rounded hover:bg-rose-50 transition-colors"
+                                className="p-1.5 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition-colors"
                                 title="Delete / Cancel this advance"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -2669,7 +2695,7 @@ export default function WorkersPage() {
               >
                 <option value="active">Active (On Duty)</option>
                 <option value="on_leave">On Leave</option>
-                <option value="left">Left / Resigned (भूतपूर्व कारीगर)</option>
+                <option value="left">Left / Resigned</option>
                 <option value="inactive">Inactive</option>
               </select>
             </div>
@@ -2936,7 +2962,7 @@ export default function WorkersPage() {
         <Modal
           isOpen={Boolean(hisaabSlipWorker)}
           onClose={() => setHisaabSlipWorker(null)}
-          title="Worker Salary & Upaad Hisaab Voucher (वेतन हिसाब चिट्ठी)"
+          title="Worker Salary & Advance Settlement Voucher"
         >
           <div className="space-y-4">
             {/* The printable Hisaab voucher body */}
@@ -2945,7 +2971,7 @@ export default function WorkersPage() {
               <div className="text-center pb-3 border-b border-gray-200">
                 <h2 className="text-lg font-black uppercase tracking-wider text-gray-900">{businessName}</h2>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  MONTHLY SALARY & ADVANCE SETTLEMENT VOUCHER (वेतन हिसाब चिट्ठी)
+                  MONTHLY SALARY & ADVANCE SETTLEMENT VOUCHER
                 </p>
                 {businessPhone && <p className="text-2xs text-gray-400">Phone: {businessPhone}</p>}
                 <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-xs font-bold text-gray-800 font-mono">
@@ -2996,7 +3022,7 @@ export default function WorkersPage() {
               {/* Attendance & Machine Shifts Breakdown (Shows 2.0 and 1.5 machine days!) */}
               <div>
                 <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-1.5">
-                  1. Machine Attendance & Shifts Summary (हाजिरी / मशीन शिफ्ट्स)
+                  1. Machine Attendance & Shifts Summary
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
                   <div className="p-2 bg-emerald-50 rounded-md border border-emerald-100">
@@ -3030,7 +3056,7 @@ export default function WorkersPage() {
               {/* Earnings Calculation Breakdown */}
               <div className="border-t border-gray-200 pt-3">
                 <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-1.5">
-                  2. Gross Earnings (कुल आवक हिसाब)
+                  2. Gross Earnings Breakdown
                 </h4>
                 <div className="space-y-1.5 text-xs">
                   <div className="flex justify-between py-1 border-b border-gray-100">
@@ -3064,7 +3090,7 @@ export default function WorkersPage() {
               {/* Advances (Upaad / Kharcha Deductions) */}
               <div className="border-t border-gray-200 pt-3">
                 <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-1.5">
-                  3. Advances & Upaad Deducted (उपाड / खर्चा कटौती)
+                  3. Advances & Upaad Deducted
                 </h4>
                 {currentHisaab.paymentsList.length === 0 ? (
                   <p className="text-xs text-gray-400 italic">No advances or withdrawals taken this month.</p>
@@ -3087,11 +3113,11 @@ export default function WorkersPage() {
                 )}
               </div>
 
-              {/* 4. Previous Month Carried Balance (पूर्व माह शेष हिसाब) */}
+              {/* 4. Previous Month Carried Balance */}
               {currentHisaab.previousBalance !== 0 && (
                 <div className="border-t border-gray-200 pt-3">
                   <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-1.5 flex items-center justify-between">
-                    <span>4. Previous Month Balance (पूर्व माह शेष — {currentHisaab.prevMonthLabel})</span>
+                    <span>4. Previous Month Balance ({currentHisaab.prevMonthLabel})</span>
                     <span
                       className={`text-2xs px-2 py-0.5 rounded-full font-bold uppercase ${
                         currentHisaab.previousBalance < 0
@@ -3112,8 +3138,8 @@ export default function WorkersPage() {
                     <div>
                       <p className="font-semibold">
                         {currentHisaab.previousBalance < 0
-                          ? `Previous Advance Overdrawn from ${currentHisaab.prevMonthLabel} (कारीगर पर बकाया उपाड)`
-                          : `Previous Unpaid Balance from ${currentHisaab.prevMonthLabel} (पूर्व माह बाकी वेतन)`}
+                          ? `Previous Advance Overdrawn from ${currentHisaab.prevMonthLabel}`
+                          : `Previous Unpaid Balance from ${currentHisaab.prevMonthLabel}`}
                       </p>
                       <p className="text-2xs text-gray-500 mt-0.5">
                         Closing balance automatically carried over into {salaryMonth}
@@ -3147,8 +3173,8 @@ export default function WorkersPage() {
                     }`}
                   >
                     {currentHisaab.balanceDue >= 0
-                      ? 'Net Payable Balance (चुकता राशि)'
-                      : 'Advance Overdrawn (उपाड बाकी - कारीगर पर बाकी)'}
+                      ? 'Net Payable Balance'
+                      : 'Advance Overdrawn'}
                   </p>
                   <p className={`text-2xs ${currentHisaab.balanceDue >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
                     {currentHisaab.previousBalance !== 0
@@ -3203,7 +3229,7 @@ export default function WorkersPage() {
                 className="text-xs"
               >
                 <Printer className="w-3.5 h-3.5 mr-1" />
-                Print Hisaab (प्रिंट)
+                Print Voucher
               </Button>
 
               <div className="flex items-center gap-2">
@@ -3569,7 +3595,7 @@ export default function WorkersPage() {
               {selectedProfileWorker.wage_history && selectedProfileWorker.wage_history.length > 1 && (
                 <div className="sm:col-span-2 pt-2 border-t border-gray-200">
                   <span className="text-2xs uppercase tracking-wider font-bold text-gray-500 block mb-1">
-                    Wage Revision History (वेतन संशोधन इतिहास):
+                    Wage Revision History:
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                     {selectedProfileWorker.wage_history.map((rev, idx) => (
@@ -3693,19 +3719,19 @@ export default function WorkersPage() {
                       selectedProfileHisaab.balanceDue >= 0 ? 'text-emerald-700' : 'text-rose-600'
                     }`}
                   >
-                    {selectedProfileHisaab.balanceDue >= 0 ? 'Payable Balance' : 'Karigar owes'}
+                    {selectedProfileHisaab.balanceDue >= 0 ? 'Payable Balance' : 'Advance Overdrawn'}
                   </span>
                 </div>
               </div>
             </div>
           )}
 
-            {/* Financial Passbook / Payout History (उपाड व वेतन खाता) */}
+            {/* Financial Passbook / Advance Ledger */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 flex items-center gap-1.5">
                   <Wallet className="w-3.5 h-3.5 text-amber-600" />
-                  Financial Passbook / Upaad Ledger (उपाड व वेतन खाता)
+                  Financial Passbook / Advance Ledger
                 </h4>
                 <Button
                   size="sm"

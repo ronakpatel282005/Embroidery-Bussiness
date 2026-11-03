@@ -386,69 +386,69 @@ export default function LotDetailPage({ params }: { params: Promise<{ id: string
       <div className="mb-4">
         <Link
           href="/lots"
-          className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 mr-1.5" />
-          Back to Lots
+          <ArrowLeft className="w-3.5 h-3.5 mr-1" />
+          Back to Lots Directory
         </Link>
       </div>
 
       {/* Header Card */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-xs mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-2xs mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900">{lot.lot_number}</h1>
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 font-mono">{lot.lot_number}</h1>
               <span
-                className={`px-3 py-0.5 rounded-full text-xs font-semibold capitalize ${
+                className={`px-2.5 py-0.5 rounded text-2xs font-semibold capitalize font-mono ${
                   lot.status === 'completed'
-                    ? 'bg-emerald-100 text-emerald-800'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                     : lot.status === 'in_progress'
-                    ? 'bg-blue-100 text-blue-800'
-                    : 'bg-amber-100 text-amber-800'
+                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                    : 'bg-amber-50 text-amber-700 border border-amber-200'
                 }`}
               >
                 {lot.status.replace('_', ' ')}
               </span>
 
               {lot.origin_allotment_id && (
-                <span className="inline-flex items-center gap-1 font-semibold text-xs bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-0.5 rounded-md">
-                  <Building2 className="w-3.5 h-3.5" />
-                  From {lot.vepari_name}
+                <span className="inline-flex items-center gap-1 font-semibold text-2xs bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded">
+                  <Building2 className="w-3 h-3 text-slate-500" />
+                  Received from {lot.vepari_name}
                 </span>
               )}
 
               {lot.design_number && (
-                <span className="font-mono text-xs font-bold bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-md">
+                <span className="font-mono text-2xs font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
                   Design: {lot.design_number}
                 </span>
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mt-2">
+            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2 font-mono">
               <Link
                 href={`/veparis/${lot.vepari_id}`}
-                className="font-medium text-indigo-600 hover:underline flex items-center gap-1"
+                className="font-medium text-slate-900 hover:underline flex items-center gap-1"
               >
-                <span>Vepari (Client): {lot.vepari_name}</span>
-                <ExternalLink className="w-3 h-3" />
+                <span>Client: {lot.vepari_name}</span>
+                <ExternalLink className="w-3 h-3 text-slate-400" />
               </Link>
-              <span>•</span>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4 text-gray-400" />
-                <span>Received: {formatDate(lot.date)}</span>
+              <span className="text-slate-300">•</span>
+              <div className="flex items-center gap-1 text-slate-600">
+                <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                <span>Inward: {formatDate(lot.date)}</span>
               </div>
               {lot.due_date && (
                 <>
-                  <span>•</span>
+                  <span className="text-slate-300">•</span>
                   <div
-                    className={`flex items-center gap-1 font-medium ${
-                      isOverdue ? 'text-red-600' : 'text-gray-600'
+                    className={`flex items-center gap-1 ${
+                      isOverdue ? 'text-rose-600 font-semibold' : 'text-slate-600'
                     }`}
                   >
-                    <span>Due: {formatDate(lot.due_date)}</span>
+                    <span>Delivery: {formatDate(lot.due_date)}</span>
                     {isOverdue && (
-                      <span className="px-1.5 py-0.5 bg-red-100 text-red-700 rounded text-[10px] font-bold uppercase">
+                      <span className="px-1.5 py-0.2 bg-rose-50 text-rose-700 border border-rose-200 rounded text-2xs font-bold uppercase">
                         Overdue
                       </span>
                     )}
@@ -458,18 +458,18 @@ export default function LotDetailPage({ params }: { params: Promise<{ id: string
             </div>
 
             {lot.description && (
-              <p className="text-sm text-gray-600 mt-2 bg-gray-50 px-3 py-1.5 rounded-md w-fit">
+              <p className="text-xs text-slate-600 mt-2 bg-slate-50 px-3 py-1.5 rounded border border-slate-100 w-fit">
                 {lot.description}
               </p>
             )}
 
             {lot.items.length > 0 && (
               <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
-                <span className="text-xs text-gray-400 font-medium mr-1">Garment Parts:</span>
+                <span className="text-2xs text-slate-600 font-bold uppercase tracking-wider mr-1">Parts:</span>
                 {lot.items.map((i) => (
                   <span
                     key={i.id}
-                    className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium"
+                    className="inline-flex items-center px-2 py-0.5 rounded text-2xs bg-slate-100 text-slate-700 font-medium border border-slate-200"
                   >
                     {i.work_type_name}
                   </span>
@@ -479,58 +479,47 @@ export default function LotDetailPage({ params }: { params: Promise<{ id: string
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Real-time Status Action Button / Production Indicator */}
+          <div className="flex flex-wrap items-center gap-2">
             {lot.status === 'completed' ? (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handleUpdateLotStatus('in_progress')}
                 disabled={updatingStatus}
-                className="text-amber-700 border-amber-200 hover:bg-amber-50"
+                className="h-8 text-xs font-semibold text-amber-700 border-amber-200 hover:bg-amber-50"
               >
-                <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
+                <RotateCcw className="w-3.5 h-3.5 mr-1 text-amber-600" />
                 Reopen Lot
               </Button>
             ) : allotments.some((a) => !a.factory_is_own) ? (
-              /* If allotted to external/partner factory: Only the factory can mark it complete! */
               <div
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-50 border border-blue-200 text-blue-800"
-                title={
-                  allotments.some((a) => a.factory_linked)
-                    ? 'Work is with partner factory. When the partner marks it complete in their account, this lot will automatically complete.'
-                    : 'Work is with external factory. Mark challans as received in the table below when goods return.'
-                }
+                className="flex items-center gap-1.5 px-3 py-1 rounded text-2xs font-mono font-semibold bg-slate-100 border border-slate-200 text-slate-700"
               >
-                <Clock className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
+                <Clock className="w-3 h-3 text-slate-500 animate-pulse" />
                 <span>
                   {allotments.some((a) => a.factory_linked)
-                    ? 'In Production at Partner Factory'
-                    : 'Allotted to External Factory'}
+                    ? 'In Production (Partner)'
+                    : 'Allotted Outward'}
                 </span>
               </div>
             ) : allotments.length > 0 && allotments.every((a) => a.factory_is_own) ? (
-              /* In-House Production (Own Factory): You are running the machines, so you mark complete! */
               <Button
                 size="sm"
                 onClick={() => handleUpdateLotStatus('completed')}
                 disabled={updatingStatus}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
-                title="Mark in-house production complete on your machines"
+                className="h-8 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs"
               >
-                <CheckCircle2 className="w-4 h-4 mr-1.5" />
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
                 Mark Completed
               </Button>
             ) : lot.origin_allotment_id && allotments.length === 0 ? (
-              /* Received order being done in-house directly: Can mark complete to return to client */
               <Button
                 size="sm"
                 onClick={() => handleUpdateLotStatus('completed')}
                 disabled={updatingStatus}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
-                title="Mark job complete and notify client"
+                className="h-8 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs"
               >
-                <CheckCircle2 className="w-4 h-4 mr-1.5" />
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
                 Mark Completed
               </Button>
             ) : null}
@@ -539,26 +528,26 @@ export default function LotDetailPage({ params }: { params: Promise<{ id: string
               variant="outline"
               size="sm"
               onClick={() => setIsEditModalOpen(true)}
-              className="text-gray-700"
+              className="h-8 text-xs font-medium border-slate-200 text-slate-700 hover:bg-slate-50"
             >
-              <Edit2 className="w-3.5 h-3.5 mr-1.5 text-gray-500" />
-              Edit Lot
+              <Edit2 className="w-3 h-3 mr-1 text-slate-400" />
+              Edit
             </Button>
 
             <Button
               variant="outline"
               size="sm"
               onClick={handleDeleteLot}
-              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-gray-200"
+              className="h-8 text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-slate-200"
             >
-              <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-              Delete Lot
+              <Trash2 className="w-3 h-3 mr-1" />
+              Delete
             </Button>
 
             {hasRemainingPieces && lot.status !== 'completed' ? (
               <Link href={`/lots/${lot.id}/allot`}>
-                <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 shadow-xs">
-                  <Send className="w-3.5 h-3.5 mr-1.5" />
+                <Button size="sm" className="h-8 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-2xs">
+                  <Send className="w-3 h-3 mr-1.5 text-slate-300" />
                   {lot.allotted_pieces > 0
                     ? `Allot Remaining (${lot.total_pieces - lot.allotted_pieces} pcs)`
                     : 'Allot to Factory'}
@@ -571,10 +560,9 @@ export default function LotDetailPage({ params }: { params: Promise<{ id: string
                 variant="outline"
                 size="sm"
                 onClick={handleUnallotAll}
-                className="text-amber-700 border-amber-300 hover:bg-amber-50 shadow-xs"
-                title="Cancel all outward allotments and return pieces to available"
+                className="h-8 text-xs font-medium text-amber-700 border-amber-200 hover:bg-amber-50 shadow-2xs"
               >
-                <RotateCcw className="w-3.5 h-3.5 mr-1.5 text-amber-600" />
+                <RotateCcw className="w-3 h-3 mr-1 text-amber-600" />
                 Unallot All
               </Button>
             )}
@@ -582,158 +570,156 @@ export default function LotDetailPage({ params }: { params: Promise<{ id: string
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+      {/* Unified Executive KPI Strip */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 bg-white rounded-xl border border-slate-200 shadow-2xs mb-6 overflow-hidden">
+        <div className="p-4 sm:p-5">
+          <p className="text-2xs font-bold uppercase tracking-wider text-slate-600">
             Total Pieces in Lot
           </p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">
+          <p className="text-2xl font-bold text-slate-900 font-mono tracking-tight mt-1">
             {lot.total_pieces.toLocaleString('en-IN')} pcs
           </p>
-          <p className="text-xs text-gray-500 mt-1">
-            Parts: {lot.items.map((i) => i.work_type_name).join(', ')}
+          <p className="text-2xs text-slate-600 mt-1 font-mono">
+            {lot.items.map((i) => `${i.work_type_name} (${i.pieces})`).join(', ')}
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-            Rate Per Piece / Suit
+        <div className="p-4 sm:p-5">
+          <p className="text-2xs font-bold uppercase tracking-wider text-slate-600">
+            Rate / Piece
           </p>
-          <p className="text-2xl font-bold text-gray-900 mt-1 font-mono">
-            {formatCurrency(perPieceRate)} <span className="text-xs font-normal text-gray-500">/ pc</span>
+          <p className="text-2xl font-bold text-slate-900 font-mono tracking-tight mt-1">
+            {formatCurrency(perPieceRate)}
           </p>
-          <p className="text-xs text-gray-400 mt-1 capitalize">
-            {lot.pricing_type === 'per_piece' ? 'Per piece rate' : 'Full lot lump sum'}
+          <p className="text-2xs text-slate-600 mt-1 capitalize font-mono">
+            {lot.pricing_type === 'per_piece' ? 'Unit Piece Basis' : 'Full Lot Lump Sum'}
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+        <div className="p-4 sm:p-5">
+          <p className="text-2xs font-bold uppercase tracking-wider text-slate-600">
             Total Lot Value (Receivable)
           </p>
-          <p className="text-2xl font-bold text-emerald-600 font-mono mt-1">
+          <p className="text-2xl font-bold text-emerald-700 font-mono tracking-tight mt-1">
             {formatCurrency(lot.total_amount)}
           </p>
-          <p className="text-xs text-gray-400 mt-1">Agreed with vepari</p>
+          <p className="text-2xs text-slate-600 mt-1 font-mono">Agreed with client ledger</p>
         </div>
       </div>
 
 
       {/* ALLOTMENTS HISTORY CARD */}
-      <Card className="mb-6 shadow-xs border-gray-200">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-base flex items-center gap-2">
-                <FactoryIcon className="w-4 h-4 text-indigo-600" />
-                Factory Allotments ({allotments.length})
-              </CardTitle>
-              <CardDescription>
-                Work outward challans sent to your machines or outsourced partner factories
-              </CardDescription>
-            </div>
-            {hasRemainingPieces && (
-              <Link href={`/lots/${lot.id}/allot`}>
-                <Button size="sm" variant="outline">
-                  <Send className="w-3.5 h-3.5 mr-1" />
-                  Allot More
-                </Button>
-              </Link>
-            )}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xs mb-6 overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/40">
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+              <FactoryIcon className="w-3.5 h-3.5 text-slate-500" />
+              Factory Outward Allotments ({allotments.length})
+            </h2>
+            <p className="text-2xs text-slate-600 mt-0.5">
+              Production challans dispatched to in-house floor or outsourced partner factories
+            </p>
           </div>
-        </CardHeader>
-        <CardContent>
+          {hasRemainingPieces && (
+            <Link href={`/lots/${lot.id}/allot`}>
+              <Button size="sm" variant="outline" className="h-8 text-xs font-medium border-slate-200 text-slate-700 hover:bg-slate-50">
+                <Send className="w-3 h-3 mr-1 text-slate-500" />
+                Allot Remaining
+              </Button>
+            </Link>
+          )}
+        </div>
+        <div className="p-0">
           {allotments.length === 0 ? (
-            <div className="py-12 text-center text-gray-400 text-sm">
-              <FactoryIcon className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+            <div className="py-12 text-center text-slate-600 text-xs font-mono">
+              <FactoryIcon className="w-7 h-7 text-slate-300 mx-auto mb-2" />
               <p>No factory allotments made yet for this lot.</p>
               <Link href={`/lots/${lot.id}/allot`} className="mt-3 inline-block">
-                <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700">
-                  <Send className="w-3.5 h-3.5 mr-1.5" />
-                  Allot this Lot to Factory Now
+                <Button size="sm" className="h-8 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-2xs">
+                  <Send className="w-3 h-3 mr-1.5 text-slate-300" />
+                  Allot to Factory Floor Now
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="overflow-x-auto border border-gray-100 rounded-lg">
-              <table className="w-full text-left text-sm text-gray-600">
-                <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-600">
+                <thead className="bg-slate-50 text-2xs uppercase font-bold text-slate-600 border-b border-slate-200 tracking-wider">
                   <tr>
-                    <th className="px-6 py-3">Challan #</th>
-                    <th className="px-6 py-3">Factory Unit</th>
-                    <th className="px-6 py-3">Parts & Pieces</th>
-                    <th className="px-6 py-3 text-right">Factory Rate (₹)</th>
-                    <th className="px-6 py-3 text-right">Total Payable</th>
-                    <th className="px-6 py-3 text-center">Live Status</th>
-                    <th className="px-6 py-3 text-center">WhatsApp</th>
-                    <th className="px-6 py-3 text-center">Action</th>
+                    <th className="px-5 py-3">Challan Ref</th>
+                    <th className="px-5 py-3">Factory Node</th>
+                    <th className="px-5 py-3">Garment Items</th>
+                    <th className="px-5 py-3 text-right">Job Rate</th>
+                    <th className="px-5 py-3 text-right">Payable</th>
+                    <th className="px-5 py-3 text-center">Status</th>
+                    <th className="px-5 py-3 text-center">Dispatch</th>
+                    <th className="px-5 py-3 text-center">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-slate-100">
                   {allotments.map((a) => (
-                    <tr key={a.id} className="hover:bg-gray-50/50">
-                      <td className="px-6 py-3.5 font-bold text-gray-900">
+                    <tr key={a.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="px-5 py-3.5 font-bold font-mono text-slate-900">
                         {a.challan_number}
-                        <span className="block text-2xs text-gray-400 font-normal">
+                        <span className="block text-2xs text-slate-600 font-normal">
                           {formatDate(a.allotment_date)}
                         </span>
                       </td>
-                      <td className="px-6 py-3.5">
-                        <span className="font-semibold text-gray-900 flex items-center gap-1.5">
-                          {a.factory_is_own ? '🏠' : a.factory_linked ? '🟢' : '⚪'} {a.factory_name}
+                      <td className="px-5 py-3.5">
+                        <span className="font-semibold text-slate-900 flex items-center gap-1.5">
+                          {a.factory_name}
                         </span>
-                        <span className="text-2xs text-gray-400 block">
+                        <span className="text-2xs text-slate-600 font-mono block">
                           {a.factory_is_own
                             ? 'In-House Unit'
                             : a.factory_linked
-                            ? 'Linked App User'
-                            : 'Offline Factory'}
+                            ? 'Linked Network Unit'
+                            : 'Offline Partner'}
                         </span>
                       </td>
-                      <td className="px-6 py-3.5 text-xs text-gray-700">
+                      <td className="px-5 py-3.5 text-xs text-slate-700">
                         {a.items.map((it, idx) => (
-                          <span key={idx} className="block">
-                            • {it.work_type_name}: <b>{it.pieces.toLocaleString('en-IN')} pcs</b>
+                          <span key={idx} className="block font-mono text-2xs">
+                            • {it.work_type_name}: <b className="text-slate-900">{it.pieces.toLocaleString('en-IN')} pcs</b>
                           </span>
                         ))}
                       </td>
-                      <td className="px-6 py-3.5 text-right font-mono text-gray-800 text-xs">
+                      <td className="px-5 py-3.5 text-right font-mono text-slate-700 text-xs">
                         ₹{a.rate_per_piece.toLocaleString('en-IN')} / pc
                       </td>
-                      <td className="px-6 py-3.5 text-right font-mono font-bold text-gray-900 text-sm">
+                      <td className="px-5 py-3.5 text-right font-mono font-bold text-slate-900 text-xs">
                         {formatCurrency(a.total_amount)}
                       </td>
                       {/* Interactive Status Toggle */}
-                      <td className="px-6 py-3.5 text-center">
+                      <td className="px-5 py-3.5 text-center">
                         <button
                           type="button"
                           onClick={() => handleToggleAllotmentStatus(a.id, a.status)}
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded text-2xs font-semibold font-mono transition-all ${
                             a.status === 'completed'
-                              ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-                              : 'bg-blue-100 text-blue-800 hover:bg-emerald-100 hover:text-emerald-800'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                              : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-emerald-50 hover:text-emerald-700'
                           }`}
                           title={
                             a.status === 'completed'
                               ? 'Click to reopen allotment'
-                              : 'Click to mark complete (propagates to downstream factory and client)'
+                              : 'Click to mark complete'
                           }
                         >
                           {a.status === 'completed' ? (
                             <>
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                               Completed
                             </>
                           ) : (
                             <>
-                              <Clock className="w-3.5 h-3.5 text-blue-600" />
-                              Mark Complete
+                              <Clock className="w-3 h-3 text-blue-600" />
+                              In Progress
                             </>
                           )}
                         </button>
                       </td>
-                      <td className="px-6 py-3.5 text-center">
+                      <td className="px-5 py-3.5 text-center">
                         {a.factory_phone ? (
                           <a
                             href={`https://wa.me/${a.factory_phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
@@ -741,23 +727,23 @@ export default function LotDetailPage({ params }: { params: Promise<{ id: string
                             )}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center text-xs text-emerald-600 hover:text-emerald-800 font-semibold gap-1"
+                            className="inline-flex items-center text-2xs font-semibold text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 shadow-2xs gap-1"
                           >
-                            <MessageCircle className="w-3.5 h-3.5" />
-                            <span>Challan</span>
+                            <MessageCircle className="w-3 h-3" />
+                            <span>Slip</span>
                           </a>
                         ) : (
-                          <span className="text-2xs text-gray-300">—</span>
+                          <span className="text-2xs text-slate-300 font-mono">—</span>
                         )}
                       </td>
-                      <td className="px-6 py-3.5 text-center">
+                      <td className="px-5 py-3.5 text-center">
                         <button
                           type="button"
                           onClick={() => handleDeleteAllotment(a)}
-                          className="inline-flex items-center gap-1 text-xs px-2.5 py-1 text-amber-700 border border-amber-300 rounded-md hover:bg-amber-50 transition-colors font-medium"
+                          className="inline-flex items-center gap-1 text-2xs px-2 py-0.5 text-amber-700 border border-amber-200 rounded hover:bg-amber-50 transition-colors font-medium"
                           title="Unallot this factory challan and return pieces to pool"
                         >
-                          <RotateCcw className="w-3 h-3 text-amber-600" />
+                          <RotateCcw className="w-2.5 h-2.5 text-amber-600" />
                           Unallot
                         </button>
                       </td>
@@ -767,8 +753,8 @@ export default function LotDetailPage({ params }: { params: Promise<{ id: string
               </table>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Special Remarks if any */}
       {lot.notes && (

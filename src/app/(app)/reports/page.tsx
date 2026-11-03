@@ -256,51 +256,55 @@ export default function ReportsAnalyticsPage() {
   const grossMargin = totalBilled - totalFactoryCost
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-8 max-w-7xl mx-auto space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-indigo-600" />
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-2xs font-semibold uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Ledger & Audit</span>
+            <span className="text-slate-300">/</span>
+            <span className="text-xs text-slate-500 font-medium">Business Performance</span>
+          </div>
+          <h1 className="text-xl font-bold tracking-tight text-slate-900">
             Financial & Production Reports
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
-            Overview of order billing, client receivables, factory expenses, and gross margins.
+          <p className="text-xs text-slate-500 mt-1">
+            Comprehensive audit of billing, trader collections, outsourced manufacturing expenses, and gross margins.
           </p>
         </div>
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => window.print()} className="h-9">
-            <Printer className="w-4 h-4 mr-1.5" />
-            Print Report
+          <Button variant="outline" size="sm" onClick={() => window.print()} className="h-8 text-xs font-medium border-slate-200 text-slate-700 hover:bg-slate-50">
+            <Printer className="w-3.5 h-3.5 mr-1.5 text-slate-500" />
+            Print Statement
           </Button>
           <Button
             size="sm"
             onClick={handleExportCSV}
-            className="h-9 bg-indigo-600 hover:bg-indigo-700 shadow-xs"
+            className="h-8 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-2xs"
           >
-            <Download className="w-4 h-4 mr-1.5" />
-            Export CSV
+            <Download className="w-3.5 h-3.5 mr-1.5 text-slate-300" />
+            Export CSV Ledger
           </Button>
         </div>
       </div>
 
       {/* Date Filter Bar */}
-      <div className="bg-white rounded-xl border border-gray-200 p-3 shadow-xs mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-2xs">
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-gray-400" />
-          <span className="text-xs font-semibold text-gray-600 uppercase">Period:</span>
+          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+          <span className="text-2xs font-bold text-slate-600 uppercase tracking-wider">Accounting Period:</span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="inline-flex p-1 bg-slate-100 rounded-lg gap-1">
           <button
             type="button"
             onClick={() => setDatePreset('this_month')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
               datePreset === 'this_month'
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-white text-slate-900 shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             This Month
@@ -308,10 +312,10 @@ export default function ReportsAnalyticsPage() {
           <button
             type="button"
             onClick={() => setDatePreset('last_month')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
               datePreset === 'last_month'
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-white text-slate-900 shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             Last Month
@@ -319,10 +323,10 @@ export default function ReportsAnalyticsPage() {
           <button
             type="button"
             onClick={() => setDatePreset('this_year')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
               datePreset === 'this_year'
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-white text-slate-900 shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             This Year (2026)
@@ -330,128 +334,122 @@ export default function ReportsAnalyticsPage() {
           <button
             type="button"
             onClick={() => setDatePreset('all')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
               datePreset === 'all'
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-white text-slate-900 shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            All Time
+            All-Time
           </button>
         </div>
       </div>
 
-      {/* Financial Health KPI Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
+      {/* Unified Executive Financial KPI Strip */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="p-4 sm:p-5">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Orders Billed</p>
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-              <TrendingUp className="w-4 h-4" />
-            </div>
+            <span className="text-2xs font-bold uppercase tracking-wider text-slate-600">Total Orders Billed</span>
+            <TrendingUp className="w-3.5 h-3.5 text-slate-400" />
           </div>
-          <p className="text-2xl font-bold mt-2 text-indigo-700 font-mono">
+          <p className="text-2xl font-bold font-mono tracking-tight text-slate-900 mt-2">
             {formatCurrency(totalBilled)}
           </p>
-          <p className="text-xs text-gray-400 mt-1">
-            {totalPieces.toLocaleString('en-IN')} pcs across {lotCount} lots
-          </p>
+          <div className="flex items-center gap-1.5 mt-1 text-2xs text-slate-600 font-mono">
+            <span>{totalPieces.toLocaleString('en-IN')} pcs</span>
+            <span>•</span>
+            <span>{lotCount} lots</span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
+        <div className="p-4 sm:p-5">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Net Outstanding Due</p>
-            <div className="p-2 bg-amber-50 text-amber-600 rounded-lg">
-              <ArrowUpRight className="w-4 h-4" />
-            </div>
+            <span className="text-2xs font-bold uppercase tracking-wider text-slate-600">Receivables Due</span>
+            <ArrowUpRight className="w-3.5 h-3.5 text-amber-500" />
           </div>
-          <p className="text-2xl font-bold mt-2 text-amber-600 font-mono">
+          <p className="text-2xl font-bold font-mono tracking-tight text-amber-600 mt-2">
             {formatCurrency(netOutstandingReceivable)}
           </p>
-          <p className="text-xs text-gray-400 mt-1">
-            Collected {formatCurrency(totalCollected)}
+          <p className="text-2xs text-slate-600 mt-1 font-mono">
+            Collected: {formatCurrency(totalCollected)}
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
+        <div className="p-4 sm:p-5">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Factory Payable Due</p>
-            <div className="p-2 bg-orange-50 text-orange-600 rounded-lg">
-              <ArrowDownRight className="w-4 h-4" />
-            </div>
+            <span className="text-2xs font-bold uppercase tracking-wider text-slate-600">Factory Payables</span>
+            <ArrowDownRight className="w-3.5 h-3.5 text-slate-400" />
           </div>
-          <p className="text-2xl font-bold mt-2 text-orange-600 font-mono">
+          <p className="text-2xl font-bold font-mono tracking-tight text-slate-900 mt-2">
             {formatCurrency(netPayableToFactories)}
           </p>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-2xs text-slate-600 mt-1 font-mono">
             Paid {formatCurrency(totalFactoryPaid)} / Total {formatCurrency(totalFactoryCost)}
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
+        <div className="p-4 sm:p-5">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Gross Profit Margin</p>
-            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
-              <TrendingUp className="w-4 h-4" />
-            </div>
+            <span className="text-2xs font-bold uppercase tracking-wider text-slate-600">Gross Margin Spread</span>
+            <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
           </div>
-          <p className="text-2xl font-bold mt-2 text-emerald-700 font-mono">
+          <p className="text-2xl font-bold font-mono tracking-tight text-emerald-700 mt-2">
             {formatCurrency(grossMargin)}
           </p>
-          <p className="text-xs text-emerald-600 mt-1 font-medium">
-            {totalBilled > 0 ? `${Math.round((grossMargin / totalBilled) * 100)}% margin spread` : '—'}
+          <p className="text-2xs text-emerald-600 mt-1 font-semibold">
+            {totalBilled > 0 ? `${Math.round((grossMargin / totalBilled) * 100)}% operating margin` : '—'}
           </p>
         </div>
       </div>
 
       {/* Section 1: Client / Vepari Receivables Breakdown */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-xs mb-8 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/40">
           <div>
-            <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-              <Users className="w-4 h-4 text-indigo-600" />
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+              <Users className="w-3.5 h-3.5 text-slate-500" />
               Client / Vepari Statement Summary
             </h2>
-            <p className="text-xs text-gray-500">Breakdown of orders billed, payments collected, and dues pending</p>
+            <p className="text-2xs text-slate-600 mt-0.5">Orders billed, collections realized, and net balances</p>
           </div>
-          <span className="text-xs text-gray-400">{vepariBreakdown.length} clients</span>
+          <span className="text-2xs font-medium text-slate-600 bg-white px-2 py-0.5 rounded border border-slate-200">{vepariBreakdown.length} accounts</span>
         </div>
 
         {loading ? (
-          <div className="py-12 text-center text-gray-400 text-sm">
-            <div className="animate-spin h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full mx-auto mb-2" />
-            Loading client figures...
+          <div className="py-12 text-center text-slate-400 text-xs">
+            <div className="animate-spin h-5 w-5 border-2 border-slate-900 border-t-transparent rounded-full mx-auto mb-2" />
+            Compiling audit statement...
           </div>
         ) : vepariBreakdown.length === 0 ? (
-          <div className="py-12 text-center text-gray-400 text-sm">
+          <div className="py-12 text-center text-slate-600 text-xs font-mono">
             No active billing recorded for this period.
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-600">
-              <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+            <table className="w-full text-left text-xs text-slate-600">
+              <thead className="bg-slate-50 text-2xs uppercase font-bold text-slate-600 border-b border-slate-200 tracking-wider">
                 <tr>
-                  <th className="px-6 py-3.5">Client / Vepari</th>
-                  <th className="px-6 py-3.5 text-right">Total Billed (₹)</th>
-                  <th className="px-6 py-3.5 text-right">Collected (₹)</th>
-                  <th className="px-6 py-3.5 text-right">Outstanding (₹)</th>
-                  <th className="px-6 py-3.5 text-center">Contact</th>
+                  <th className="px-5 py-3">Client Name</th>
+                  <th className="px-5 py-3 text-right">Total Billed</th>
+                  <th className="px-5 py-3 text-right">Collected</th>
+                  <th className="px-5 py-3 text-right">Outstanding</th>
+                  <th className="px-5 py-3 text-center">Dispatch</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-slate-100">
                 {vepariBreakdown.map((v) => (
-                  <tr key={v.id} className="hover:bg-gray-50/75 transition-colors">
-                    <td className="px-6 py-3.5 font-bold text-gray-900">{v.name}</td>
-                    <td className="px-6 py-3.5 text-right font-mono text-gray-700">
+                  <tr key={v.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-5 py-3 font-semibold text-slate-900">{v.name}</td>
+                    <td className="px-5 py-3 text-right font-mono text-slate-700">
                       {formatCurrency(v.total_billed)}
                     </td>
-                    <td className="px-6 py-3.5 text-right font-mono text-emerald-600 font-semibold">
+                    <td className="px-5 py-3 text-right font-mono text-emerald-600 font-semibold">
                       {formatCurrency(v.total_paid)}
                     </td>
-                    <td className="px-6 py-3.5 text-right font-mono font-bold text-amber-600">
+                    <td className="px-5 py-3 text-right font-mono font-bold text-amber-600">
                       {formatCurrency(v.outstanding)}
                     </td>
-                    <td className="px-6 py-3.5 text-center">
+                    <td className="px-5 py-3 text-center">
                       {v.phone && (
                         <a
                           href={`https://wa.me/91${v.phone.replace(/[^0-9]/g, '').slice(-10)}?text=${encodeURIComponent(
@@ -461,7 +459,7 @@ export default function ReportsAnalyticsPage() {
                           )}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center text-xs font-medium text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200"
+                          className="inline-flex items-center text-2xs font-semibold text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200 shadow-2xs"
                         >
                           WhatsApp Statement
                         </a>
@@ -476,52 +474,52 @@ export default function ReportsAnalyticsPage() {
       </div>
 
       {/* Section 2: Factory Allotment Expense Breakdown */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/40">
           <div>
-            <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-              <Factory className="w-4 h-4 text-indigo-600" />
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+              <Factory className="w-3.5 h-3.5 text-slate-500" />
               Partner Factory Expenses & Payables
             </h2>
-            <p className="text-xs text-gray-500">Summary of outward work cost and outstanding payments owed</p>
+            <p className="text-2xs text-slate-600 mt-0.5">Outward work allotments, disbursements, and liabilities owed</p>
           </div>
-          <span className="text-xs text-gray-400">{factoryBreakdown.length} units</span>
+          <span className="text-2xs font-medium text-slate-600 bg-white px-2 py-0.5 rounded border border-slate-200">{factoryBreakdown.length} units</span>
         </div>
 
         {loading ? (
-          <div className="py-12 text-center text-gray-400 text-sm">
-            <div className="animate-spin h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full mx-auto mb-2" />
+          <div className="py-12 text-center text-slate-400 text-xs">
+            <div className="animate-spin h-5 w-5 border-2 border-slate-900 border-t-transparent rounded-full mx-auto mb-2" />
             Loading factory expenses...
           </div>
         ) : factoryBreakdown.length === 0 ? (
-          <div className="py-12 text-center text-gray-400 text-sm">
+          <div className="py-12 text-center text-slate-600 text-xs font-mono">
             No outside factory allotments recorded for this period.
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-600">
-              <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+            <table className="w-full text-left text-xs text-slate-600">
+              <thead className="bg-slate-50 text-2xs uppercase font-bold text-slate-600 border-b border-slate-200 tracking-wider">
                 <tr>
-                  <th className="px-6 py-3.5">Factory Unit</th>
-                  <th className="px-6 py-3.5 text-right">Outward Cost (₹)</th>
-                  <th className="px-6 py-3.5 text-right">Paid (₹)</th>
-                  <th className="px-6 py-3.5 text-right">Balance Due (₹)</th>
+                  <th className="px-5 py-3">Factory Unit</th>
+                  <th className="px-5 py-3 text-right">Outward Cost</th>
+                  <th className="px-5 py-3 text-right">Disbursed</th>
+                  <th className="px-5 py-3 text-right">Balance Due</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-slate-100">
                 {factoryBreakdown.map((f) => (
-                  <tr key={f.id} className="hover:bg-gray-50/75 transition-colors">
-                    <td className="px-6 py-3.5">
-                      <p className="font-bold text-gray-900">{f.name}</p>
-                      {f.owner_name && <p className="text-xs text-gray-400">{f.owner_name}</p>}
+                  <tr key={f.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-5 py-3">
+                      <p className="font-semibold text-slate-900">{f.name}</p>
+                      {f.owner_name && <p className="text-2xs text-slate-600">{f.owner_name}</p>}
                     </td>
-                    <td className="px-6 py-3.5 text-right font-mono text-gray-700">
+                    <td className="px-5 py-3 text-right font-mono text-slate-700">
                       {formatCurrency(f.total_cost)}
                     </td>
-                    <td className="px-6 py-3.5 text-right font-mono text-emerald-600 font-semibold">
+                    <td className="px-5 py-3 text-right font-mono text-emerald-600 font-semibold">
                       {formatCurrency(f.total_paid)}
                     </td>
-                    <td className="px-6 py-3.5 text-right font-mono font-bold text-orange-600">
+                    <td className="px-5 py-3 text-right font-mono font-bold text-slate-900">
                       {formatCurrency(f.balance_due)}
                     </td>
                   </tr>

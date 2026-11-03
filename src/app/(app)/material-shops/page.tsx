@@ -307,15 +307,24 @@ export default function MaterialShopsPage() {
   const totalOutstandingAll = shops.reduce((sum, s) => sum + s.outstanding_balance, 0)
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <ShoppingBag className="w-6 h-6 text-indigo-600" />
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-3xs uppercase tracking-wider font-mono font-bold text-slate-400">
+              Procurement & Inventory
+            </span>
+            <span className="text-slate-300">&bull;</span>
+            <span className="text-3xs uppercase tracking-wider font-mono font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+              Vendor Register
+            </span>
+          </div>
+          <h1 className="text-xl lg:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <ShoppingBag className="w-6 h-6 text-slate-700" />
             Raw Material Shops & Spares
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <p className="text-xs text-slate-500 mt-0.5">
             Manage your vendors for threads, zari, canvas, needles, sequins, and track supplier payables.
           </p>
         </div>
@@ -333,115 +342,114 @@ export default function MaterialShopsPage() {
               setItemsSummary('')
               setIsPurchaseOpen(true)
             }}
-            className="shadow-xs"
+            className="shadow-2xs h-9 text-xs"
           >
-            <Receipt className="w-4 h-4 mr-1.5" />
+            <Receipt className="w-3.5 h-3.5 mr-1.5" />
             Record Purchase Bill
           </Button>
 
-          <Button onClick={handleOpenAdd} className="bg-indigo-600 hover:bg-indigo-700 shadow-xs">
-            <Plus className="w-4 h-4 mr-1.5" />
+          <Button onClick={handleOpenAdd} className="shadow-2xs h-9 text-xs">
+            <Plus className="w-3.5 h-3.5 mr-1.5" />
             Add Supplier Shop
           </Button>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Total Outstanding Due to Shops
-            </p>
-            <div className="p-2 bg-orange-50 text-orange-600 rounded-lg">
-              <TrendingDown className="w-4 h-4" />
+      {/* Unified Procurement Metrics Ribbon */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+          <div className="p-4 sm:p-5">
+            <span className="text-3xs uppercase tracking-wider font-bold text-slate-400 font-mono">
+              Outstanding Due to Vendors
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-black text-amber-700 font-mono tabular-nums">
+                {formatCurrency(totalOutstandingAll)}
+              </span>
             </div>
+            <p className="text-3xs font-mono text-slate-500 mt-1">Pending vendor settlements</p>
           </div>
-          <p className="text-2xl font-bold mt-2 text-orange-600 font-mono">
-            {formatCurrency(totalOutstandingAll)}
-          </p>
-          <p className="text-xs text-gray-400 mt-1">Pending payments to raw material vendors</p>
-        </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+          <div className="p-4 sm:p-5">
+            <span className="text-3xs uppercase tracking-wider font-bold text-slate-400 font-mono">
               Total Purchases Billed
-            </p>
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-              <ShoppingBag className="w-4 h-4" />
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-black text-slate-900 font-mono tabular-nums">
+                {formatCurrency(totalBilledAll)}
+              </span>
             </div>
+            <p className="text-3xs font-mono text-slate-500 mt-1">Cumulative materials inward</p>
           </div>
-          <p className="text-2xl font-bold mt-2 text-indigo-700 font-mono">
-            {formatCurrency(totalBilledAll)}
-          </p>
-          <p className="text-xs text-gray-400 mt-1">Threads, zari, canvas & machine parts</p>
-        </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Total Payments Made
-            </p>
-            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
-              <CheckCircle2 className="w-4 h-4" />
+          <div className="p-4 sm:p-5">
+            <span className="text-3xs uppercase tracking-wider font-bold text-slate-400 font-mono">
+              Cleared Dues Paid
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-black text-emerald-700 font-mono tabular-nums">
+                {formatCurrency(totalPaidAll)}
+              </span>
             </div>
+            <p className="text-3xs font-mono text-slate-500 mt-1">Payments disbursed to date</p>
           </div>
-          <p className="text-2xl font-bold mt-2 text-emerald-600 font-mono">
-            {formatCurrency(totalPaidAll)}
-          </p>
-          <p className="text-xs text-gray-400 mt-1">Cleared supplier dues</p>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-2 mb-4 bg-gray-100 p-1 rounded-xl w-fit">
+      {/* Navigation Tabs */}
+      <div className="border-b border-slate-200 flex flex-wrap items-center gap-6">
         <button
           type="button"
           onClick={() => setActiveTab('shops')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'shops'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
           <Building2 className="w-4 h-4" />
-          Supplier Shops ({shops.length})
+          <span>Supplier Shops</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {shops.length}
+          </span>
         </button>
+
         <button
           type="button"
           onClick={() => setActiveTab('bills')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
             activeTab === 'bills'
-              ? 'bg-white text-indigo-700 shadow-xs'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'border-slate-900 text-slate-900 font-semibold'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
           <Receipt className="w-4 h-4" />
-          Purchase Bills Log ({purchases.length})
+          <span>Purchase Bills Ledger</span>
+          <span className="px-2 py-0.5 rounded-full text-2xs font-mono bg-slate-100 text-slate-600 font-semibold">
+            {purchases.length}
+          </span>
         </button>
       </div>
 
       {activeTab === 'shops' ? (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
           {/* Search & Filter */}
-          <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="relative flex-1 max-w-md">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <div className="p-3.5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <Input
-                placeholder="Search shops by name, contact, phone..."
+                placeholder="Search shops by name, contact..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 text-sm"
+                className="pl-8 text-xs h-8 bg-white border-slate-200"
               />
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 font-medium">Category:</span>
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="h-9 px-3 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="h-8 px-2.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900"
               >
                 <option value="all">All Categories</option>
                 <option value="Threads & Zari">Threads & Zari</option>
@@ -455,23 +463,23 @@ export default function MaterialShopsPage() {
 
           {/* Table */}
           {loading ? (
-            <div className="py-16 text-center text-gray-400 text-sm">Loading material shops...</div>
+            <div className="py-16 text-center text-slate-400 text-sm">Loading material shops...</div>
           ) : filteredShops.length === 0 ? (
-            <div className="py-16 text-center text-gray-400 text-sm">
-              <ShoppingBag className="w-10 h-10 mx-auto text-gray-300 mb-2" />
+            <div className="py-16 text-center text-slate-400 text-sm">
+              <ShoppingBag className="w-10 h-10 mx-auto text-slate-300 mb-2" />
               No supplier shops found.
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-gray-600">
-                <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50/80 text-2xs uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
                   <tr>
-                    <th className="px-6 py-3.5">Shop / Vendor</th>
-                    <th className="px-6 py-3.5">Category</th>
-                    <th className="px-6 py-3.5 text-right">Total Purchases (₹)</th>
-                    <th className="px-6 py-3.5 text-right">Total Paid (₹)</th>
-                    <th className="px-6 py-3.5 text-right">Balance Due (₹)</th>
-                    <th className="px-6 py-3.5 text-center">Action</th>
+                    <th className="px-5 py-3">Shop / Vendor</th>
+                    <th className="px-5 py-3">Category</th>
+                    <th className="px-5 py-3 text-right">Total Purchases (₹)</th>
+                    <th className="px-5 py-3 text-right">Total Paid (₹)</th>
+                    <th className="px-5 py-3 text-right">Balance Due (₹)</th>
+                    <th className="px-5 py-3 text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">

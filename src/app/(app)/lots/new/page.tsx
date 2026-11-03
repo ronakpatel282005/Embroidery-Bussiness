@@ -249,17 +249,22 @@ function NewLotForm() {
       <div className="mb-4">
         <Link
           href={selectedVepariId ? `/veparis/${selectedVepariId}` : '/lots'}
-          className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 mr-1.5" />
-          {selectedVepariId ? 'Back to Vepari' : 'Back to Lots'}
+          <ArrowLeft className="w-3.5 h-3.5 mr-1" />
+          {selectedVepariId ? 'Back to Vepari' : 'Back to Lots Directory'}
         </Link>
       </div>
 
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Add New Lot Entry</h1>
-        <p className="text-gray-500 mt-1">
-          Record a new lot from your vepari. Specify total pieces, included garment parts, and agreed price.
+      <div className="pb-6 border-b border-slate-200 mb-6">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-2xs font-semibold uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Production Floor</span>
+          <span className="text-slate-300">/</span>
+          <span className="text-xs text-slate-500 font-medium">Inward Intake</span>
+        </div>
+        <h1 className="text-xl font-bold tracking-tight text-slate-900">Inward New Lot Entry</h1>
+        <p className="text-xs text-slate-500 mt-1">
+          Record incoming work lot from trader. Define total piece count, constituent garment components, and rate agreement.
         </p>
       </div>
 
@@ -427,13 +432,13 @@ function NewLotForm() {
                       key={wt.id}
                       type="button"
                       onClick={() => toggleWorkType(wt.name)}
-                      className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium border transition-all ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                         isSelected
-                          ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                          ? 'bg-slate-900 text-white border-slate-900 shadow-2xs'
+                          : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                       }`}
                     >
-                      {isSelected && <Check className="w-3.5 h-3.5" />}
+                      {isSelected && <Check className="w-3 h-3 text-slate-300" />}
                       <span>{wt.name}</span>
                     </button>
                   )
@@ -499,14 +504,14 @@ function NewLotForm() {
               </div>
 
               {/* Pricing Mode Toggle */}
-              <div className="flex items-center bg-gray-100 p-0.5 rounded-lg border border-gray-200">
+              <div className="flex items-center bg-slate-100 p-1 rounded-lg">
                 <button
                   type="button"
                   onClick={() => setPricingType('per_piece')}
-                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors ${
+                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${
                     pricingType === 'per_piece'
-                      ? 'bg-white text-indigo-700 shadow-xs'
-                      : 'text-gray-500 hover:text-gray-900'
+                      ? 'bg-white text-slate-900 shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Rate Per Piece (Suit)
@@ -514,10 +519,10 @@ function NewLotForm() {
                 <button
                   type="button"
                   onClick={() => setPricingType('full_lot')}
-                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors ${
+                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${
                     pricingType === 'full_lot'
-                      ? 'bg-white text-indigo-700 shadow-xs'
-                      : 'text-gray-500 hover:text-gray-900'
+                      ? 'bg-white text-slate-900 shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   Full Lot Total Price
@@ -611,22 +616,23 @@ function NewLotForm() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => router.back()}
               disabled={isSubmitting}
+              className="h-8 text-xs border-slate-200"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              size="lg"
+              size="sm"
               isLoading={isSubmitting}
-              className="bg-indigo-600 hover:bg-indigo-700 min-w-44"
+              className="h-8 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-2xs min-w-36"
             >
-              Save & Create Lot
+              Inward & Register Lot
             </Button>
           </div>
         </div>

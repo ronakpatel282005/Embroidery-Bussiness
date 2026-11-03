@@ -199,48 +199,56 @@ export default function BusinessLinkingPage() {
   }
 
   return (
-    <div className="p-8 max-w-7xl">
+    <div className="p-8 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Link2 className="w-6 h-6 text-indigo-600" />
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-2xs font-semibold uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Network & Nodes</span>
+            <span className="text-slate-300">/</span>
+            <span className="text-xs text-slate-500 font-medium">B2B Integration</span>
+          </div>
+          <h1 className="text-xl font-bold tracking-tight text-slate-900">
             Supply Chain & Business Linking
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
-            Connect directly with partner factories and designer clients on the platform for real-time automatic challan sync.
+          <p className="text-xs text-slate-500 mt-1">
+            Connect directly with partner factories and designer clients for real-time automated challan and lot status dispatch.
           </p>
         </div>
 
-        <Button onClick={() => setIsConnectOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 shadow-xs">
-          <Link2 className="w-4 h-4 mr-1.5" />
-          Link Partner Business
+        <Button onClick={() => setIsConnectOpen(true)} className="h-8 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-2xs">
+          <Link2 className="w-3.5 h-3.5 mr-1.5 text-slate-300" />
+          Link Partner Node
         </Button>
       </div>
 
       {/* Your Business Linking ID Card */}
       {business && (
-        <div className="bg-gradient-to-r from-indigo-900 to-indigo-800 text-white rounded-2xl p-6 mb-8 shadow-sm relative overflow-hidden">
+        <div className="bg-slate-900 text-slate-100 rounded-xl p-6 border border-slate-800 shadow-2xs relative overflow-hidden">
           <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div>
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
-                <ShieldCheck className="w-3.5 h-3.5 text-indigo-300" />
-                Verified Platform Business
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-slate-800 text-emerald-400 border border-slate-700 rounded text-2xs font-mono font-medium uppercase tracking-wider mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                Verified Production Node
               </span>
-              <h2 className="text-2xl font-bold">{business.name}</h2>
-              <p className="text-indigo-200 text-sm mt-1">Owner: {business.owner_name} &bull; Phone: {business.phone}</p>
-              <p className="text-xs text-indigo-300 mt-3 max-w-lg">
-                Other registered factories and designers can link to you instantly using your registered phone number ({business.phone}).
+              <h2 className="text-xl font-bold tracking-tight text-white">{business.name}</h2>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 mt-1.5 font-mono">
+                <span>Principal: {business.owner_name}</span>
+                <span className="text-slate-600">•</span>
+                <span>Direct Node: {business.phone}</span>
+              </div>
+              <p className="text-xs text-slate-400 mt-3 max-w-xl leading-relaxed">
+                Registered partner embroidery factories and fabric traders can pair to your account using your verified mobile identifier ({business.phone}).
               </p>
             </div>
 
             <div className="flex flex-col sm:items-end gap-2 flex-shrink-0">
               <Button
                 onClick={handleCopyLink}
-                className="bg-white text-indigo-900 hover:bg-indigo-50 font-semibold shadow-xs"
+                className="h-8 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 shadow-2xs"
               >
-                {copied ? <Check className="w-4 h-4 mr-1.5 text-emerald-600" /> : <Copy className="w-4 h-4 mr-1.5" />}
-                {copied ? 'Copied Invitation!' : 'Copy Partner Invite'}
+                {copied ? <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 mr-1.5 text-slate-400" />}
+                {copied ? 'Copied Details' : 'Copy Partner Invite'}
               </Button>
             </div>
           </div>
@@ -248,96 +256,93 @@ export default function BusinessLinkingPage() {
       )}
 
       {/* How Real-Time Handoff Works */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 font-bold flex items-center justify-center mb-3 text-sm">
-            1
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
+          <div className="w-6 h-6 rounded bg-slate-100 text-slate-700 font-mono text-2xs font-bold flex items-center justify-center mb-2.5">
+            01
           </div>
-          <h3 className="font-bold text-gray-900 text-sm">Instant Challan Sync</h3>
-          <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-            When you allot lots to a linked partner factory, a challan is created in their account automatically. No manual re-typing.
+          <h3 className="font-semibold text-slate-900 text-xs">Automated Challan Sync</h3>
+          <p className="text-2xs text-slate-600 mt-1 leading-relaxed">
+            When you allot lots to a linked partner unit, a digital challan is created in their account automatically with zero data entry.
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center mb-3 text-sm">
-            2
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
+          <div className="w-6 h-6 rounded bg-slate-100 text-slate-700 font-mono text-2xs font-bold flex items-center justify-center mb-2.5">
+            02
           </div>
-          <h3 className="font-bold text-gray-900 text-sm">Two-Way Status Tracking</h3>
-          <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-            When your partner marks an allotment finished on their machines, your lot status updates to completed live.
+          <h3 className="font-semibold text-slate-900 text-xs">Bi-Directional Telemetry</h3>
+          <p className="text-2xs text-slate-600 mt-1 leading-relaxed">
+            When partner shifts finish piece-counts on their embroidery machines, your floor dashboard marks the stage complete in real time.
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs">
-          <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 font-bold flex items-center justify-center mb-3 text-sm">
-            3
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs">
+          <div className="w-6 h-6 rounded bg-slate-100 text-slate-700 font-mono text-2xs font-bold flex items-center justify-center mb-2.5">
+            03
           </div>
-          <h3 className="font-bold text-gray-900 text-sm">Private & Confidential</h3>
-          <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-            Your client names, billing rates, and profits are strictly private and never shared with partner factories.
+          <h3 className="font-semibold text-slate-900 text-xs">Zero Commercial Exposure</h3>
+          <p className="text-2xs text-slate-600 mt-1 leading-relaxed">
+            Trader identities, client billings, and profit margins are strictly isolated and never visible to partner factories.
           </p>
         </div>
       </div>
 
       {/* Linked Partners Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/40">
           <div>
-            <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-              <Users className="w-4 h-4 text-indigo-600" />
-              Connected Partner Businesses ({partners.length})
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+              <Users className="w-3.5 h-3.5 text-slate-500" />
+              Connected Partner Units ({partners.length})
             </h2>
-            <p className="text-xs text-gray-500">Live linked accounts exchanging challans and orders</p>
+            <p className="text-2xs text-slate-600 mt-0.5">Live linked accounts exchanging challans and orders</p>
           </div>
         </div>
 
         {loading ? (
-          <div className="py-16 text-center text-gray-400 text-sm">Loading connected partners...</div>
+          <div className="py-16 text-center text-slate-400 text-xs">
+            <div className="animate-spin h-5 w-5 border-2 border-slate-900 border-t-transparent rounded-full mx-auto mb-2" />
+            Scanning network nodes...
+          </div>
         ) : partners.length === 0 ? (
-          <div className="py-16 text-center text-gray-400 text-sm">
-            <Building2 className="w-10 h-10 mx-auto text-gray-300 mb-2" />
-            No linked partner businesses yet. Click &quot;Link Partner Business&quot; above to connect.
+          <div className="py-16 text-center text-slate-600 text-xs font-mono">
+            <Building2 className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+            No linked partner businesses yet. Click &quot;Link Partner Node&quot; above to connect.
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-600">
-              <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-500 border-b border-gray-100">
+            <table className="w-full text-left text-xs text-slate-600">
+              <thead className="bg-slate-50 text-2xs uppercase font-bold text-slate-600 border-b border-slate-200 tracking-wider">
                 <tr>
-                  <th className="px-6 py-3.5">Business Name</th>
-                  <th className="px-6 py-3.5">Role</th>
-                  <th className="px-6 py-3.5">Owner / Contact</th>
-                  <th className="px-6 py-3.5">Connection Status</th>
-                  <th className="px-6 py-3.5 text-center">Sync Status</th>
+                  <th className="px-5 py-3">Business Entity</th>
+                  <th className="px-5 py-3">Role</th>
+                  <th className="px-5 py-3">Principal / Contact</th>
+                  <th className="px-5 py-3">Handshake Status</th>
+                  <th className="px-5 py-3 text-center">Sync Protocol</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-slate-100">
                 {partners.map((p) => (
-                  <tr key={p.id} className="hover:bg-gray-50/75 transition-colors">
-                    <td className="px-6 py-4 font-bold text-gray-900">{p.name}</td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                          p.partner_type === 'Factory'
-                            ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                            : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        }`}
-                      >
+                  <tr key={p.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-5 py-3.5 font-semibold text-slate-900">{p.name}</td>
+                    <td className="px-5 py-3.5">
+                      <span className="px-2 py-0.5 rounded text-2xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
                         {p.partner_type === 'Factory' ? 'Outsourced Factory' : 'Designer Client'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-xs">
-                      {p.owner_name && <p className="font-semibold text-gray-800">{p.owner_name}</p>}
-                      {p.phone && <p className="text-gray-400 font-mono">{p.phone}</p>}
+                    <td className="px-5 py-3.5 text-xs">
+                      {p.owner_name && <p className="font-semibold text-slate-800">{p.owner_name}</p>}
+                      {p.phone && <p className="text-slate-600 font-mono text-2xs">{p.phone}</p>}
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-semibold">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        Live Synchronized
+                    <td className="px-5 py-3.5">
+                      <span className="inline-flex items-center gap-1.5 text-2xs text-emerald-700 font-mono font-semibold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Synchronized
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className="text-xs text-gray-400 font-medium">Auto-Challan Active</span>
+                    <td className="px-5 py-3.5 text-center">
+                      <span className="text-2xs text-slate-600 font-mono bg-slate-50 px-2 py-0.5 rounded border border-slate-200">Active</span>
                     </td>
                   </tr>
                 ))}
@@ -369,67 +374,68 @@ export default function BusinessLinkingPage() {
                 onChange={(e) => handlePhoneSearch(e.target.value)}
                 required
               />
-              <p className="text-2xs text-gray-400 mt-1">
+              <p className="text-2xs text-slate-600 mt-1">
                 Enter the 10-digit mobile number your partner used to register on the platform.
               </p>
             </div>
 
             {searchLoading && (
-              <div className="p-3 bg-indigo-50 text-indigo-700 text-xs rounded-lg flex items-center gap-2">
-                <div className="w-3.5 h-3.5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                Searching platform registry...
+              <div className="p-3 bg-slate-50 text-slate-700 text-xs rounded-lg flex items-center gap-2 border border-slate-200">
+                <div className="w-3.5 h-3.5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin" />
+                Querying platform directory...
               </div>
             )}
 
             {connectError && (
-              <div className="p-3 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg text-xs">
+              <div className="p-3 bg-rose-50 text-rose-800 border border-rose-200 rounded-lg text-xs">
                 {connectError}
               </div>
             )}
 
             {foundBusiness && (
-              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
                 <span className="text-2xs font-bold text-emerald-700 uppercase tracking-wider block mb-1">
-                  ✓ Registered Business Found
+                  ✓ Registered Business Node Found
                 </span>
-                <p className="font-bold text-gray-900 text-base">{foundBusiness.name}</p>
-                <p className="text-xs text-gray-600 mt-0.5">Owner: {foundBusiness.owner_name}</p>
+                <p className="font-bold text-slate-900 text-sm">{foundBusiness.name}</p>
+                <p className="text-xs text-slate-600 mt-0.5">Principal: {foundBusiness.owner_name}</p>
 
-                <div className="mt-3 pt-3 border-t border-emerald-200">
-                  <Label htmlFor="link-type" className="text-xs text-gray-700">Link this business as:</Label>
+                <div className="mt-3 pt-3 border-t border-slate-200">
+                  <Label htmlFor="link-type" className="text-xs text-slate-700">Link relationship:</Label>
                   <select
                     id="link-type"
                     value={partnerType}
                     onChange={(e) => setPartnerType(e.target.value as 'factory' | 'vepari')}
-                    className="w-full mt-1 h-9 px-3 bg-white border border-emerald-300 rounded-lg text-xs font-semibold focus:outline-none"
+                    className="w-full mt-1 h-9 px-3 bg-white border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-slate-900"
                   >
-                    <option value="factory">Outsourced Factory (I send work to them)</option>
-                    <option value="vepari">Designer Client (They send work to me)</option>
+                    <option value="factory">Outsourced Factory (Job Work Unit)</option>
+                    <option value="vepari">Designer Client (Vepari / Merchant)</option>
                   </select>
                 </div>
               </div>
             )}
 
             {connectSuccess && (
-              <div className="p-3 bg-emerald-600 text-white rounded-lg text-xs font-semibold text-center">
-                ✓ Successfully Connected! Auto-sync is now active.
+              <div className="p-3 bg-emerald-700 text-white rounded-lg text-xs font-semibold text-center">
+                ✓ Node Successfully Linked! Live auto-challan dispatch is enabled.
               </div>
             )}
 
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setIsConnectOpen(false)}
+                className="h-8 text-xs border-slate-200"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={!foundBusiness || searchLoading || connectSuccess}
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="h-8 text-xs bg-slate-900 hover:bg-slate-800 text-white"
               >
-                Connect & Link
+                Establish Link
               </Button>
             </div>
           </form>

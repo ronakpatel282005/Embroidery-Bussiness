@@ -17,19 +17,35 @@ import {
   Settings,
   LogOut,
   Link2,
+  Sparkles,
 } from 'lucide-react'
 
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/veparis', label: 'Veparis', icon: Users },
-  { href: '/lots', label: 'Lots', icon: Package },
-  { href: '/factories', label: 'Factories', icon: Factory },
-  { href: '/workers', label: 'Workers', icon: UserCheck },
-  { href: '/material-shops', label: 'Material Shops', icon: ShoppingBag },
-  { href: '/reminders', label: 'Reminders', icon: Bell },
-  { href: '/reports', label: 'Reports', icon: BarChart3 },
-  { href: '/business-linking', label: 'Business Linking', icon: Link2 },
-  { href: '/settings', label: 'Settings', icon: Settings },
+const navGroups = [
+  {
+    heading: 'Core Operations',
+    items: [
+      { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+      { href: '/lots', label: 'Lots Directory', icon: Package },
+      { href: '/factories', label: 'Factories & Floor', icon: Factory },
+      { href: '/workers', label: 'Workers & Payroll', icon: UserCheck },
+    ],
+  },
+  {
+    heading: 'Finance & Supply',
+    items: [
+      { href: '/veparis', label: 'Veparis (Traders)', icon: Users },
+      { href: '/material-shops', label: 'Material & Spares', icon: ShoppingBag },
+      { href: '/reports', label: 'Reports & Hisaab', icon: BarChart3 },
+    ],
+  },
+  {
+    heading: 'Connectivity',
+    items: [
+      { href: '/business-linking', label: 'Business Linking', icon: Link2 },
+      { href: '/reminders', label: 'Active Reminders', icon: Bell },
+      { href: '/settings', label: 'Settings', icon: Settings },
+    ],
+  },
 ]
 
 export default function Sidebar() {
@@ -43,53 +59,71 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="w-64 min-h-screen bg-white border-r border-gray-200 flex flex-col">
-      {/* Brand */}
-      <div className="px-6 py-5 border-b border-gray-200">
+    <aside className="w-60 min-h-screen bg-slate-900 border-r border-slate-800 flex flex-col text-slate-300 select-none">
+      {/* Brand Header */}
+      <div className="px-5 py-4 border-b border-slate-800/80">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-9 h-9 bg-indigo-600 rounded-lg flex-shrink-0">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+            {/* Custom Embroidery Machine / Needle Icon */}
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 2L4 7v10l8 5 8-5V7l-8-5z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12M8 9.5l8 5M8 14.5l8-5" />
             </svg>
           </div>
-          <div>
-            <p className="font-semibold text-gray-900 text-sm leading-tight">Embroidery</p>
-            <p className="text-xs text-gray-500">Business Platform</p>
+          <div className="min-w-0 flex-1">
+            <p className="font-bold text-white text-xs tracking-tight leading-tight truncate">
+              Khatodara Flow
+            </p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-3xs font-mono font-medium text-slate-400 uppercase tracking-wider">
+                Production Live
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {navItems.map((item) => {
-          const Icon = item.icon
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-              )}
-            >
-              <Icon className={cn('w-4 h-4 flex-shrink-0', isActive ? 'text-indigo-600' : 'text-gray-400')} />
-              {item.label}
-            </Link>
-          )
-        })}
+      {/* Navigation Sections */}
+      <nav className="flex-1 px-3 py-3 space-y-4 overflow-y-auto">
+        {navGroups.map((group) => (
+          <div key={group.heading} className="space-y-1">
+            <p className="px-2.5 text-3xs uppercase font-bold tracking-wider text-slate-500 font-mono">
+              {group.heading}
+            </p>
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const Icon = item.icon
+                const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href + '/'))
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
+                      isActive
+                        ? 'bg-slate-800 text-white font-semibold shadow-2xs border border-slate-700/80'
+                        : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
+                    )}
+                  >
+                    <Icon className={cn('w-4 h-4 flex-shrink-0', isActive ? 'text-emerald-400' : 'text-slate-400')} />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
-      {/* Sign out */}
-      <div className="px-3 py-4 border-t border-gray-200">
+      {/* Footer & Sign out */}
+      <div className="p-3 border-t border-slate-800/80">
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+          className="flex items-center gap-2.5 px-2.5 py-1.5 w-full rounded-md text-xs font-medium text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/20 border border-transparent transition-colors"
         >
-          <LogOut className="w-4 h-4 text-gray-400" />
-          Sign Out
+          <LogOut className="w-4 h-4 flex-shrink-0" />
+          <span>Sign Out</span>
         </button>
       </div>
     </aside>
